@@ -1,0 +1,21 @@
+{
+	"node": "n8n-nodes-nuvemshop.nuvemShop",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Sales", "Marketing", "AI"],
+	"subcategories": {
+		"AI": ["Tools"]
+	},
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://tiendanube.github.io/api-documentation/authentication"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop#readme"
+			}
+		]
+	}
+}

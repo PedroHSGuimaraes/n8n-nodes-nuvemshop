@@ -1,0 +1,71 @@
+{
+	"name": "n8n-nodes-nuvemshop",
+	"version": "1.0.0",
+	"description": "Complete n8n community node for the Nuvemshop API, with AI Agent tool support, all documented resources, pagination, partner actions, custom API calls and webhook triggers.",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"nuvemshop",
+		"nuvem shop",
+		"tiendanube",
+		"ecommerce",
+		"commerce",
+		"ai-tool",
+		"webhook"
+	],
+	"license": "MIT",
+	"homepage": "https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop#readme",
+	"author": {
+		"name": "Pedro Henrique Santos Guimaraes",
+		"email": "pedro.guimaraes02@hotmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop.git"
+	},
+	"bugs": {
+		"url": "https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop/issues"
+	},
+	"main": "dist/nodes/NuvemShop/NuvemShop.node.js",
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"format": "prettier nodes credentials test --write",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"release": "n8n-node release",
+		"test": "npm run build --silent && node --test test/*.test.cjs",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/NuvemShopApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/NuvemShop/NuvemShop.node.js",
+			"dist/nodes/NuvemShopTrigger/NuvemShopTrigger.node.js"
+		]
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "^0.38.8",
+		"@types/node": "^24.0.0",
+		"eslint": "9.32.0",
+		"n8n-workflow": "^2.16.0",
+		"prettier": "3.6.2",
+		"release-it": "^20.2.1",
+		"typescript": "5.9.2"
+	}
+}

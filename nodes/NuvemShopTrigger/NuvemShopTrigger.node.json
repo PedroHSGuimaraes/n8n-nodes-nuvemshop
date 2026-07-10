@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-nuvemshop.nuvemShopTrigger",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Sales"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://tiendanube.github.io/api-documentation/authentication"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://tiendanube.github.io/api-documentation/resources/webhook"
+			}
+		]
+	}
+}
