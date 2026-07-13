@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here.
 
+## 1.1.0 - 2026-07-13
+
+- Added guided, typed body fields and common query filters while preserving Advanced JSON compatibility.
+- Added explicit required-field guidance and final request-body validation for clearer local errors.
+- Added selectable content language for multilingual guided fields in Nuvemshop and Tiendanube stores.
+- Connected dynamic Name-or-ID selectors for products, variants, categories, locations, and webhooks.
+- Changed resource defaults to prefer safe read operations over mutations.
+- Improved dropdown labels with record IDs and protected dependent variant loaders from unresolved expressions.
+- Reworked the README in pt-BR with onboarding, examples, AI Tool setup, Trigger guidance, troubleshooting, compatibility, and support.
+- Expanded schema, legacy compatibility, guided input, loader, documentation, and security tests.
+
 ## 1.0.0 - 2026-07-10
 
 - Initial release of the complete Nuvem Shop action node.

@@ -1,5 +1,6 @@
 import type { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 
+import { guidedBodyProperties, guidedQueryProperties } from './guidedInputs';
 import type { NuvemShopOperationDefinition, NuvemShopResourceDefinition } from './types';
 
 function operationDisplay(resource: string, operation: string): Record<string, string[]> {
@@ -14,13 +15,22 @@ function operationFields(
 	const properties: INodeProperties[] = [];
 
 	for (const parameter of operation.pathParameters ?? []) {
+		const inferredLoadOptions: Record<string, string> = {
+			'Category ID': 'getCategories',
+			'Location ID': 'getLocations',
+			'Product ID': 'getProducts',
+			'Product Variant ID': 'getProductVariants',
+			'Webhook ID': 'getWebhooks',
+		};
+		const loadOptionsMethod =
+			parameter.loadOptionsMethod ?? inferredLoadOptions[parameter.displayName];
 		properties.push({
-			displayName: parameter.displayName,
+			displayName: loadOptionsMethod
+				? parameter.displayName.replace(/ ID$/, ' Name or ID')
+				: parameter.displayName,
 			name: parameter.name,
-			type: parameter.loadOptionsMethod ? 'options' : 'string',
-			typeOptions: parameter.loadOptionsMethod
-				? { loadOptionsMethod: parameter.loadOptionsMethod }
-				: undefined,
+			type: loadOptionsMethod ? 'options' : 'string',
+			typeOptions: loadOptionsMethod ? { loadOptionsMethod } : undefined,
 			default: '',
 			required: true,
 			placeholder: parameter.placeholder,
@@ -44,26 +54,44 @@ function operationFields(
 	}
 
 	if (operation.body && operation.scope !== 'authorization') {
-		properties.push({
-			displayName: operation.bodyType === 'multipart' ? 'Multipart Fields (JSON)' : 'Body (JSON)',
-			name: 'body',
-			type: 'json',
-			typeOptions: { alwaysOpenEditWindow: true },
-			default: '{}',
-			required: operation.body.required ?? false,
-			displayOptions,
-			description: `${operation.body.description} Example: ${operation.body.example}`,
-		});
+		const bodyIsArray = Array.isArray(JSON.parse(operation.body.example));
+		properties.push(...guidedBodyProperties(operation, displayOptions));
+		if (bodyIsArray) {
+			properties.push({
+				displayName: 'Body (JSON) (Required)',
+				name: 'body',
+				type: 'json',
+				typeOptions: { alwaysOpenEditWindow: true },
+				default: '[]',
+				required: true,
+				displayOptions,
+				description: `${operation.body.description} Required JSON array for this operation. Example: ${operation.body.example}.`,
+			});
+		} else {
+			properties.push({
+				displayName:
+					operation.bodyType === 'multipart'
+						? 'Advanced Multipart Fields (JSON)'
+						: 'Advanced Body (JSON)',
+				name: 'body',
+				type: 'json',
+				typeOptions: { alwaysOpenEditWindow: true },
+				default: '{}',
+				displayOptions,
+				description: `${operation.body.description} Optional advanced fallback; values here are merged with guided fields, and guided fields take precedence. Example: ${operation.body.example}.`,
+			});
+		}
 	}
 
 	if (operation.query) {
+		properties.push(...guidedQueryProperties(operation, displayOptions));
 		properties.push({
-			displayName: 'Query Parameters (JSON)',
+			displayName: 'Additional Query Parameters (JSON)',
 			name: 'query',
 			type: 'json',
 			default: '{}',
 			displayOptions,
-			description: `${operation.query.description} Example: ${operation.query.example}`,
+			description: `${operation.query.description} Optional advanced fallback for filters not shown above. Guided filters take precedence. Example: ${operation.query.example}.`,
 		});
 	}
 
@@ -118,18 +146,22 @@ export function buildResourceProperties(
 				name: operation.name,
 				value: operation.value,
 				action: operation.action,
-				description: `${operation.description} API request: ${operation.method} ${operation.path}`,
+				description: operation.description,
 			}));
+		const safeDefault =
+			operationOptions.find(({ value }) => value === 'getMany')?.value ??
+			operationOptions.find(({ value }) => value === 'get')?.value ??
+			resource.operations.find(({ method }) => method === 'GET')?.value ??
+			operationOptions[0]?.value ??
+			'';
 
-		// Each generated operation selector uses the first real option for its resource.
-		// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 		properties.push({
 			displayName: 'Operation',
 			name: 'operation',
 			type: 'options',
 			noDataExpression: true,
 			options: operationOptions,
-			default: operationOptions[0]?.value ?? '',
+			default: safeDefault,
 			displayOptions: { show: { resource: [resource.value] } },
 		});
 

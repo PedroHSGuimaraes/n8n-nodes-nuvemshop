@@ -9,6 +9,7 @@ import { NodeOperationError } from 'n8n-workflow';
 import { parseJsonBody, parseJsonObject } from '../helpers/json';
 import { buildMultipartForm } from '../helpers/multipart';
 import { nuvemShopApiRequest, nuvemShopApiRequestAllItems } from '../transport';
+import { guidedValues, validateRequiredBody } from './guidedInputs';
 import type { NuvemShopOperationDefinition, NuvemShopRequestScope } from './types';
 
 function resolvePath(
@@ -160,27 +161,42 @@ export async function executeDefinedOperation(
 			'Body (JSON)',
 			itemIndex,
 		);
+		const guidedBody = guidedValues(this, operation, itemIndex, 'body');
+		if (Array.isArray(parsedBody)) {
+			if (Object.keys(guidedBody).length) {
+				throw new NodeOperationError(
+					this.getNode(),
+					'Guided fields cannot be combined with an array-shaped Advanced Body (JSON). Use one input method for this operation.',
+					{ itemIndex },
+				);
+			}
+			body = parsedBody;
+		} else {
+			body = { ...parsedBody, ...guidedBody };
+		}
+		validateRequiredBody(this, operation, body, itemIndex);
 		if (operation.bodyType === 'multipart') {
-			if (Array.isArray(parsedBody)) {
+			if (Array.isArray(body)) {
 				throw new NodeOperationError(
 					this.getNode(),
 					'Multipart Fields (JSON) must be an object whose top-level keys are form field names.',
 					{ itemIndex },
 				);
 			}
-			body = await buildMultipartForm(this, parsedBody, itemIndex);
-		} else {
-			body = parsedBody;
+			body = await buildMultipartForm(this, body, itemIndex);
 		}
 	}
 
 	const query = operation.query
-		? parseJsonObject(
-				this,
-				this.getNodeParameter('query', itemIndex, '{}'),
-				'Query Parameters (JSON)',
-				itemIndex,
-			)
+		? {
+				...parseJsonObject(
+					this,
+					this.getNodeParameter('query', itemIndex, '{}'),
+					'Query Parameters (JSON)',
+					itemIndex,
+				),
+				...guidedValues(this, operation, itemIndex, 'query'),
+			}
 		: {};
 
 	if (operation.paginated) {

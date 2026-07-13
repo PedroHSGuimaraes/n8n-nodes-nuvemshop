@@ -36,7 +36,11 @@ function toOptions(
 		.map((item) => {
 			const value = String(item[idField] ?? '');
 			const label = optionName(item, nameFields, value);
-			return { name: prefix ? `${prefix(item)}${label}` : label, value };
+			const namedLabel = prefix ? `${prefix(item)}${label}` : label;
+			return {
+				name: namedLabel && namedLabel !== value ? `${namedLabel} — ${value}` : value,
+				value,
+			};
 		})
 		.filter((option) => option.value)
 		.sort((left, right) => left.name.localeCompare(right.name));
@@ -82,7 +86,7 @@ export const loadOptions = {
 
 	async getOrders(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 		const items = await loadCollection(this, '/orders', { fields: 'id,number,customer' });
-		return toOptions(items, ['number'], 'id', (item) => `#${String(item.number ?? item.id)} - `);
+		return toOptions(items, ['number'], 'id', () => '#');
 	},
 
 	async getProducts(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
@@ -91,17 +95,16 @@ export const loadOptions = {
 	},
 
 	async getProductVariants(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-		const productId = String(this.getCurrentNodeParameter('productId') ?? '').trim();
-		if (!productId) return [];
+		const productId = String(
+			this.getCurrentNodeParameter('product_id') ?? this.getCurrentNodeParameter('productId') ?? '',
+		).trim();
+		if (!/^\d+$/.test(productId)) return [];
 		const items = await loadCollection(
 			this,
 			`/products/${encodeURIComponent(productId)}/variants`,
 			{ fields: 'id,sku,values' },
 		);
-		return toOptions(items, ['sku'], 'id', (item) => {
-			const sku = String(item.sku ?? '').trim();
-			return sku ? `${sku} - ` : '';
-		});
+		return toOptions(items, ['sku']);
 	},
 
 	async getWebhooks(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {

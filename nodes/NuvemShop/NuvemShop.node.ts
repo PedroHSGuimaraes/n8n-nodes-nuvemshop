@@ -44,7 +44,7 @@ export class NuvemShop implements INodeType {
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description:
-			'Complete Nuvemshop commerce API integration and AI Agent tool. Read and manage products, variants, images, categories, customers, carts, abandoned checkouts, coupons, orders, draft orders, transactions, disputes, fulfillment orders, locations, shipping carriers, discounts, content, metafields, custom fields, billing, payment providers, scripts, webhooks, and store data. Credentials securely supply region, API version, store ID, access token, User-Agent, and optional partner app secrets. IDs must come from matching Get or Get Many operations and must never be invented. JSON writes use documented snake_case fields; multilingual fields use language objects such as {"pt":"Nome"}. Return All follows pagination at the API rate limit. Destructive, financial, inventory, cancellation, and fulfillment operations should use human review when called by an AI Agent. Custom API Call covers preview, legacy, private, and future documented routes.',
+			'Read and manage Nuvemshop store data through explicit resource operations. Use one node per AI tool and expose only the selected operation. IDs must come from matching read or create operations and must never be invented. Keep destructive, financial, inventory, fulfillment, and publication actions behind human approval.',
 		defaults: { name: 'Nuvem Shop' },
 		inputs: [NodeConnectionTypes.Main],
 		outputs: [NodeConnectionTypes.Main],

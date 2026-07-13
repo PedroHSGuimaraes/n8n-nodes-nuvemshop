@@ -1,117 +1,134 @@
 # n8n-nodes-nuvemshop
 
-Complete n8n community integration for **Nuvem Shop** (Nuvemshop). It provides a regular action node, an automatically generated AI Agent tool, and a real webhook trigger for the official Nuvemshop API.
+Node comunitário do n8n para integrar **Nuvemshop** e **Tiendanube**. Inclui um node de ações com campos guiados, uso como Tool de Agente de IA e um Trigger real para webhooks da API oficial.
 
 [![npm version](https://img.shields.io/npm/v/n8n-nodes-nuvemshop.svg)](https://www.npmjs.com/package/n8n-nodes-nuvemshop)
+[![npm downloads](https://img.shields.io/npm/dm/n8n-nodes-nuvemshop.svg)](https://www.npmjs.com/package/n8n-nodes-nuvemshop)
 [![CI](https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop/actions/workflows/ci.yml/badge.svg)](https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/n8n-nodes-nuvemshop.svg)](LICENSE.md)
 
-## Features
+## 🧭 Navegação
 
-- 198 explicit operations organized into 36 intuitive resource groups.
-- Complete explicit coverage of the stable `2025-03` API resources.
-- Legacy `v1` order pack and fulfill operations with automatic version routing.
-- Explicit unstable Order Edit support, with Custom API Call for other preview routes.
-- Brazil (`api.nuvemshop.com.br`) and international (`api.tiendanube.com`) regions.
-- Store access-token requests and Partner-Action requests with separate secure tokens.
-- OAuth authorization-code exchange without exposing the app secret in workflow parameters.
-- Controlled pagination with `Return All`, `Limit`, 200-item pages, and 2 requests/second pacing.
-- JSON and multipart form-data writes, including n8n binary attachments for Blog media.
-- AI Agent compatibility through `usableAsTool`, with detailed actions, prerequisites, formats, effects, and ID guidance.
-- Automatic webhook registration/removal, Partner Portal privacy webhooks, store validation, and HMAC SHA-256 verification.
-- Authenticated Custom API Call for preview, legacy, restricted, and future documented endpoints.
-- No runtime dependencies.
+- [Funcionalidades](#-funcionalidades)
+- [Instalação](#-instalação)
+- [Credenciais](#-credenciais)
+- [Nós e operações](#-nós-e-operações)
+- [Preenchimento guiado](#-preenchimento-guiado)
+- [Exemplos](#-exemplos)
+- [Tool de IA](#-tool-de-ia)
+- [Webhook Trigger](#-webhook-trigger)
+- [Paginação e limites](#-paginação-e-limites)
+- [Custom API Call](#-custom-api-call)
+- [Solução de problemas](#-solução-de-problemas)
+- [Desenvolvimento](#-desenvolvimento)
+- [Compatibilidade](#-compatibilidade)
+- [Recursos](#-recursos)
+- [Versões](#-versões)
+- [Suporte](#-suporte)
+- [Licença](#-licença)
 
-## Installation
+## ✨ Funcionalidades
 
-Install `n8n-nodes-nuvemshop` from **Settings > Community Nodes** in n8n.
+- 198 operações explícitas organizadas em 36 recursos.
+- Campos guiados e tipados para payloads e filtros comuns.
+- Campos obrigatórios visíveis nas operações principais.
+- JSON avançado opcional para contratos completos e recursos novos.
+- Dropdowns dinâmicos para produtos, variantes, categorias, clientes, cupons, pedidos, locais e webhooks.
+- Defaults seguros: operações de leitura são selecionadas antes de mutações.
+- API estável `2025-03`, rotas legadas `v1` e operações `unstable` documentadas.
+- Regiões Brasil/Nuvemshop e internacional/Tiendanube.
+- OAuth, Store API, Partner Actions, paginação, multipart e respostas binárias.
+- Compatibilidade com AI Agent por `usableAsTool: true`.
+- Registro e remoção automática de webhooks com validação HMAC SHA-256.
+- Sem dependências de runtime.
 
-For a self-hosted npm installation:
+## 📦 Instalação
+
+### Pela interface do n8n
+
+1. Abra **Settings → Community Nodes**.
+2. Clique em **Install a community node**.
+3. Informe `n8n-nodes-nuvemshop`.
+4. Confirme a instalação e reinicie o n8n quando solicitado.
+
+### Instalação npm self-hosted
 
 ```bash
 cd ~/.n8n
 npm install n8n-nodes-nuvemshop
 ```
 
-Restart n8n after installation.
+Reinicie o processo ou container do n8n após instalar.
 
-## Credentials
+## 🔐 Credenciais
 
-Create a **Nuvem Shop API** credential and choose the type that matches the operation:
+Crie uma credencial **Nuvem Shop API** e escolha o tipo conforme o fluxo:
 
-- **Store API** for normal merchant operations.
-- **App OAuth and Partner Actions** to exchange an authorization code before a store token exists, or to manage app-scoped billing plans.
-- **Store and App (Full Integration)** when the same connection needs store operations plus verified webhook signatures or Partner Actions.
+| Tipo                                 | Quando usar                                                                            |
+| ------------------------------------ | -------------------------------------------------------------------------------------- |
+| **Store API**                        | Produtos, pedidos, clientes e demais operações de uma loja já autorizada               |
+| **App OAuth and Partner Actions**    | Trocar o authorization code ou executar Partner Actions antes de existir token da loja |
+| **Store and App (Full Integration)** | Store API, Partner Actions e Trigger com HMAC na mesma integração                      |
 
-| Field           | Required    | Purpose                                                            |
+### Configuração passo a passo
+
+1. No Portal de Parceiros da Nuvemshop, crie ou abra seu aplicativo.
+2. Configure uma URL de redirecionamento HTTPS para receber o `code` do OAuth.
+3. Copie **App ID** e **Client Secret** para uma credencial do tipo App ou Full Integration.
+4. Envie o lojista para a URL de autorização do aplicativo.
+5. Capture o `code` retornado. Ele expira em cinco minutos.
+6. No node, use **Authorization → Exchange Authorization Code**.
+7. Copie `access_token` e `user_id` da resposta.
+8. Salve `access_token` como **Access Token** e `user_id` como **Store ID**.
+9. Escolha a região correta e mantenha `2025-03` para operações atuais.
+10. Informe um User-Agent com nome e URL de contato do aplicativo.
+11. Teste a credencial no editor do n8n.
+
+| Campo           | Obrigatório | Como preencher                                                     |
 | --------------- | ----------- | ------------------------------------------------------------------ |
-| Credential Type | Yes         | Store, app-only, or full store-and-app connection                  |
-| Access Token    | Store types | Permanent merchant OAuth token sent as Bearer authentication       |
-| Store ID        | Store types | OAuth `user_id`; inserted into every store-scoped URL              |
-| Region          | Yes         | Brazil/Nuvemshop or international/Tienda Nube API domains          |
-| API Version     | Yes         | Stable `2025-03`, legacy `v1`, or `unstable` preview               |
-| User Agent      | Yes         | App name plus contact email/URL; required by the API               |
-| App ID          | App types   | App identifier from the Partners portal                            |
-| Client Secret   | App types   | OAuth secret, Partner-Action Bearer token, and trigger HMAC secret |
+| Credential Type | Sim         | Store, App ou Full Integration                                     |
+| Access Token    | Store/Full  | Token OAuth permanente da loja                                     |
+| Store ID        | Store/Full  | Valor `user_id` retornado pelo OAuth                               |
+| Region          | Sim         | Brazil para Nuvemshop; International para Tiendanube               |
+| API Version     | Sim         | `2025-03` recomendado; `v1` ou `unstable` quando a operação exigir |
+| User Agent      | Sim         | Nome do app e e-mail ou URL pública de contato                     |
+| App ID          | App/Full    | ID do aplicativo no Portal de Parceiros                            |
+| Client Secret   | App/Full    | Segredo OAuth, Partner Actions e assinatura do Trigger             |
 
-Nuvemshop's OAuth flow returns `access_token` and `user_id` after the merchant approves the app. `user_id` is the Store ID. The authorization code expires in five minutes. Use **Authorization > Exchange Code** to exchange it; the node reads App ID and Client Secret from the encrypted credential.
+Solicite apenas os escopos usados pelo workflow. Tokens, IDs da loja e segredos ficam na credencial criptografada e nunca devem ser colocados em Body, Query ou `$fromAI()`.
 
-Official references:
+## 🧩 Nós e operações
 
-- [Authentication](https://tiendanube.github.io/api-documentation/authentication)
-- [Partner Actions](https://tiendanube.github.io/api-documentation/guides/authentication-for-partner-actions)
-- [API introduction](https://tiendanube.github.io/api-documentation/intro)
+O pacote instala:
 
-Request only the scopes the workflow needs. Newer resources add scopes beyond the older central list, including `read_email_templates`, `write_email_templates`, `read_locations`, `write_locations`, `read_fulfillment_orders`, `write_fulfillment_orders`, `read_payments`, `write_payments`, `read_payment_options`, and `read_shipping`.
+- **Nuvem Shop** — ações da API, paginação, upload e uso como Tool.
+- **Nuvem Shop Trigger** — recebimento de eventos via webhook.
 
-## Resource Coverage
+### Cobertura de recursos
 
-| Resource                     | Operations                                                                                                  |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Abandoned Checkout           | Get, Get Many, Apply Coupon                                                                                 |
-| Authorization                | Exchange Authorization Code                                                                                 |
-| Billing                      | Create/Update/Delete Plan, Get/Update Subscription, Create Charge                                           |
-| Blog                         | Blogs, posts CRUD, publish/unpublish, media and thumbnail upload                                            |
-| Business Rule                | Register callback, get payment/shipping options                                                             |
-| Cart                         | Get, remove line item, remove coupon                                                                        |
-| Category                     | Create, Get, Get Many, Update, Delete                                                                       |
-| Category Custom Field        | Definition CRUD, owners, values                                                                             |
-| Coupon                       | Create, Get, Get Many, Update, Delete                                                                       |
-| Customer                     | Create, Get, Get Many, Update, Delete                                                                       |
-| Customer Custom Field        | Definition CRUD, owners, values                                                                             |
-| Discount                     | Callback, promotion CRUD, cart discounts                                                                    |
-| Dispute                      | Create, Get, Update                                                                                         |
-| Draft Order                  | Create, Get, Get Many, Confirm, Delete                                                                      |
-| Email Template               | Get, Get Many, Update                                                                                       |
-| Fulfillment Order            | Get/Get Many, update/delete, tracking-event CRUD, label lifecycle                                           |
-| Kit                          | Get                                                                                                         |
-| Location                     | CRUD, priorities, default location, inventory levels                                                        |
-| Metafield                    | CRUD and owner-resource listing                                                                             |
-| Order                        | Create/Get/Get Many/Update, unstable edit, cancel/close/reopen, history, subscriptions, legacy pack/fulfill |
-| Order Custom Field           | Definition CRUD, owners, values                                                                             |
-| Page                         | Create, Get, Get Many, Update, Delete                                                                       |
-| Payment Option               | Get Many                                                                                                    |
-| Payment Provider             | Create, Get, Get Many, Update, Delete                                                                       |
-| Product                      | CRUD, Get by SKU, bulk stock/price update                                                                   |
-| Product Custom Field         | Definition CRUD, owners, values                                                                             |
-| Product Image                | Create, Get, Get Many, Update, Delete                                                                       |
-| Product Variant              | CRUD, full/partial bulk update, stock update                                                                |
-| Product Variant Custom Field | Definition CRUD, owners, values                                                                             |
-| Script                       | Association CRUD                                                                                            |
-| Shipping Carrier             | Create, Get, Get Many, Update, Delete                                                                       |
-| Shipping Carrier Option      | Create, Get, Get Many, Update, Delete                                                                       |
-| Fulfillment Event (Legacy)   | Legacy fulfillment event create/get/list/delete                                                             |
-| Store                        | Get                                                                                                         |
-| Transaction                  | Create, Get, Get Many, Create Event                                                                         |
-| Webhook                      | Create, Get, Get Many, Update, Delete                                                                       |
-| Custom API Call              | Authenticated GET/POST/PUT/PATCH/DELETE/HEAD with JSON, multipart, or file response                         |
+| Domínio    | Recursos e operações                                                         |
+| ---------- | ---------------------------------------------------------------------------- |
+| Catálogo   | Category, Product, Product Variant, Product Image, custom fields e Metafield |
+| Comércio   | Customer, Coupon, Cart, Abandoned Checkout, Order e Draft Order              |
+| Pagamentos | Transaction, Dispute, Payment Option, Payment Provider e Billing             |
+| Logística  | Location, Fulfillment Order, Fulfillment Event, Shipping Carrier e opções    |
+| Conteúdo   | Blog, Page, Email Template e Script                                          |
+| Plataforma | Store, Webhook, Discount, Business Rule, Kit e Authorization                 |
+| Avançado   | Custom API Call com GET, POST, PUT, PATCH, DELETE e HEAD                     |
 
-The browser-only Checkout SDK is not a server REST API and cannot execute inside n8n. Its backend integrations are represented by Payment Provider, Business Rule, Discount, Script, and Custom API Call resources.
+Cada recurso mostra somente operações compatíveis. Operações de leitura são o default sempre que existem. Use **Get Many** para localizar IDs antes de Update/Delete; não invente ou reutilize IDs de outro tipo de recurso.
 
-## JSON and IDs
+## 📝 Preenchimento guiado
 
-Write bodies use the exact API `snake_case` field names. Do not include tokens, Store ID, App ID, or Client Secret; credentials supply them securely.
+Operações com Body ou filtros apresentam três níveis:
 
-Multilingual values are objects:
+1. **Campos obrigatórios** — aparecem diretamente e precisam ser preenchidos.
+2. **Additional Fields / Update Fields / Filters** — clique em **Add Field** e escolha somente os dados necessários.
+3. **Advanced Body (JSON) / Additional Query Parameters (JSON)** — fallback opcional para campos raros ou recém-publicados pela API.
+
+Campos guiados são convertidos automaticamente para os nomes `snake_case` exigidos pela API. Quando o mesmo campo existir no JSON avançado e na interface guiada, o valor guiado vence.
+
+Valores multilíngues simples usam o idioma escolhido em **Content Language** (`pt`, `pt_BR`, `es`, `es_AR` ou `en`). Para enviar vários idiomas no mesmo campo, use o JSON avançado:
 
 ```json
 {
@@ -123,85 +140,146 @@ Multilingual values are objects:
 }
 ```
 
-IDs are not interchangeable. Product, variant, image, order, customer, category, custom-field UUID, fulfillment ULID, transaction UUID, and location ULID identify different objects. Always obtain an ID from the matching Create, Get, or Get Many operation.
+Arrays simples, como IDs de categorias, podem ser informados separados por vírgula. Objetos complexos, variantes, imagens e produtos de um pedido usam um campo JSON dedicado com exemplo visível.
 
-For multipart Blog operations, a top-level marker attaches incoming n8n binary data:
+## 🚀 Exemplos
+
+### Criar um produto
+
+1. Selecione **Product → Create**.
+2. Preencha **Name**.
+3. Em **Additional Fields**, adicione Published, Brand, Categories, Variants ou Images.
+4. Use **Category → Get Many** para obter IDs de categorias.
+5. Execute e guarde o ID do produto retornado.
+
+Exemplo do campo Variants:
 
 ```json
-{
-	"metadata": {
-		"title": "Launch notes"
-	},
-	"content": "<p>New collection available.</p>",
-	"published": true,
-	"thumbnail": {
-		"$binary": "data"
+[
+	{
+		"values": [{ "pt": "M" }],
+		"price": "79.90",
+		"stock_management": true,
+		"stock": 25,
+		"sku": "CAM-M"
 	}
-}
+]
 ```
 
-## AI Agent Tools
+### Criar e confirmar um pedido rascunho
 
-The action node sets `usableAsTool: true`. Current n8n versions automatically generate the AI Tool wrapper; there is no separate Nuvem Shop Tool node.
+1. Use **Product → Get by SKU** ou **Get Many** para localizar a variante.
+2. Use **Draft Order → Create** e preencha contato, pagamento e Products.
+3. Revise totais e itens com **Draft Order → Get**.
+4. Confirme somente após revisão humana com **Draft Order → Confirm**.
 
-On self-hosted n8n, enable community-node tool usage when required by your deployment:
+### Atualizar pedido com segurança
+
+1. Use **Order → Get Many** com filtros de status/data.
+2. Escolha o pedido pelo dropdown ou passe o ID retornado por expressão.
+3. Consulte **Order → Get** antes da alteração.
+4. Use Update, Cancel, Close ou Edit somente com validação do estado atual.
+
+## 🤖 Tool de IA
+
+O node de ações define `usableAsTool: true`. Não existe um node Tool separado.
+
+### Habilitar community nodes como tools
+
+Em instalações self-hosted, defina:
 
 ```bash
 N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
 ```
 
-Recommended pattern:
+| Instalação              | Onde definir                                              |
+| ----------------------- | --------------------------------------------------------- |
+| Docker / docker-compose | Em `environment:` ou no `.env`; depois recrie o container |
+| npm / npx               | Exporte a variável antes de executar `n8n start`          |
+| n8n Cloud               | Disponível nos planos que suportam community nodes        |
 
-1. Add one Nuvem Shop node per intended AI operation.
-2. Select one precise Resource and Operation before connecting it to the AI Agent.
-3. Give the tool a narrow name such as `NuvemShop_Get_Product` or `NuvemShop_Create_Draft_Order`.
-4. Use `$fromAI()` only for values the model may decide, with formats and constraints in its description.
-5. Keep Store ID, tokens, App ID, and Client Secret only in credentials.
-6. Require human review for delete, cancel, dispute, payment, price, inventory, fulfillment, publish, and subscription changes.
+Sem essa variável, o Nuvem Shop pode não aparecer no conector **Tool** do AI Agent.
 
-Example AI expression:
+### Configuração recomendada
+
+1. Adicione um **AI Agent** e conecte um Chat Model.
+2. No conector **Tool**, adicione **Nuvem Shop**.
+3. Escolha um único Resource e Operation por node.
+4. Dê um nome estreito, como `NuvemShop_Get_Product`.
+5. Fixe campos de segurança e deixe para a IA apenas parâmetros operacionais.
+
+Use o botão **Let the model define this** ou uma expressão `$fromAI()`:
 
 ```text
-{{ $fromAI('product_id', 'Exact numeric product ID returned by Product Get Many; never infer from the product name', 'number') }}
+{{ $fromAI('sku', 'SKU exato da variante, por exemplo CAM-M', 'string') }}
 ```
 
-The node descriptions tell the model which operation supplies each ID, expected JSON formats, pagination behavior, side effects, and destructive risks.
+Assinatura: `$fromAI(key, description?, type?, defaultValue?)`. Tipos aceitos: `string`, `number`, `boolean` e `json`.
 
-## Webhook Trigger
+Boas práticas:
 
-**Nuvem Shop Trigger** registers one webhook for each selected standard event and removes it when the workflow is deactivated. The production URL must be HTTPS; Nuvemshop rejects localhost and Nuvemshop-owned callback domains.
+- Exponha somente operações necessárias ao agente.
+- Use credencial dedicada com menor privilégio.
+- Nunca permita que o modelo invente IDs.
+- Este node não impõe aprovação automaticamente. Adicione uma etapa externa de revisão humana antes de Delete, Cancel, pagamentos, disputas, estoque, preço, fulfillment e publicação.
+- O **Nuvem Shop Trigger** não é uma Tool; triggers não podem ser conectados ao AI Agent.
 
-Supported families include app, category, customer, order, product, product variant, custom field, domain, subscription, fulfillment, fulfillment order, label, tracking event, and location events.
+## 🪝 Webhook Trigger
 
-Privacy events are configured in the Partners portal rather than through `POST /webhooks`:
+O **Nuvem Shop Trigger** registra webhooks ao ativar o workflow e remove os registros ao desativá-lo.
+
+1. Crie uma credencial Full Integration com Client Secret.
+2. Adicione o Trigger e selecione os eventos.
+3. Ative **Verify HMAC Signature**.
+4. Use uma URL de produção HTTPS; localhost não é aceito.
+5. Ative o workflow para registrar os webhooks.
+
+Famílias suportadas: app, category, customer, order, product, product variant, custom field, domain, subscription, fulfillment, fulfillment order, label, tracking event e location.
+
+Eventos de privacidade são configurados no Portal de Parceiros:
 
 - `store/redact`
 - `customers/redact`
 - `customers/data_request`
 
-Copy the trigger's production URL into the matching app setting. Signature verification uses `x-linkedstore-hmac-sha256` and the credential Client Secret. Nuvemshop can deliver events out of order or more than once; workflows must be idempotent. The trigger intentionally emits every accepted delivery.
+Copie a Production URL do Trigger para o evento correspondente. A assinatura usa o header `x-linkedstore-hmac-sha256` e o Client Secret. Eventos podem chegar repetidos ou fora de ordem; faça workflows idempotentes.
 
-## Pagination and Rate Limits
+## 📚 Paginação e limites
 
-Nuvemshop uses one-based `page` and up to 200 `per_page`. `Return All` follows pages at a 500 ms interval to respect the default two-request-per-second leak rate. Next/Evolution stores may receive higher limits.
+- **Return All** percorre as páginas automaticamente.
+- **Limit** restringe o total de itens retornados.
+- O node usa páginas de até 200 itens e intervalo de 500 ms.
+- Consultas de pedidos podem ser limitadas a 10.000 resultados; use datas incrementais.
+- Para `429`, respeite o tempo de retry e evite repetir escritas não idempotentes.
 
-Order queries are capped by the API at 10,000 matches. Use narrow date ranges and incremental `updated_at_*` filters for large stores.
+## 🔧 Custom API Call
 
-The API may return `429`, `402`, or `5xx` errors. Avoid blind retries for non-idempotent writes. Configure n8n node retry settings only when the operation is safe to repeat.
+Use quando a Nuvemshop publicar uma rota antes da atualização deste pacote ou quando uma API restrita for liberada para seu aplicativo.
 
-## Custom API Call
+- Endpoint sempre relativo, por exemplo `/products`.
+- Domínios externos, traversal, barras invertidas e caracteres de controle são bloqueados.
+- Store scope usa Store ID e Access Token.
+- Partner App scope usa App ID e Client Secret.
+- Suporta JSON, multipart e arquivo binário.
 
-Use Custom API Call when Nuvemshop adds a route before this package is updated or when support enables a restricted endpoint.
+## 🧯 Solução de problemas
 
-- Endpoints must be relative, such as `/products`; arbitrary domains are blocked.
-- Store scope uses Store ID and Access Token.
-- Partner App scope uses App ID and Client Secret.
-- The credential API Version controls the URL, including `unstable`.
-- JSON, multipart form-data, and binary responses are supported.
+| Sintoma                            | Verificação                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------- |
+| Node não aparece como Tool         | Configure `N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true` e reinicie o n8n |
+| 401 Unauthorized                   | Confira Access Token, região e tipo da credencial                         |
+| 403 Forbidden                      | Confirme os escopos concedidos ao aplicativo                              |
+| 400 Bad Request                    | Revise campos obrigatórios, User-Agent e formato do Body                  |
+| 404 Not Found                      | Confira Store ID, versão da API e ID do recurso                           |
+| 429 Too Many Requests              | Aguarde o retry e reduza concorrência/paginação                           |
+| Dropdown vazio                     | Preencha primeiro o recurso pai ou use uma expressão com ID confiável     |
+| Trigger não ativa                  | Use URL HTTPS pública e credencial Full Integration                       |
+| Assinatura HMAC falha              | Confira Client Secret e se o proxy preserva body/header originais         |
+| Evento de privacidade não registra | Configure o evento diretamente no Portal de Parceiros                     |
 
-## Development
+## 🛠️ Desenvolvimento
 
-Requires Node.js 24 for the repository toolchain.
+Requer Node.js 24 para o toolchain do repositório.
 
 ```bash
 npm ci
@@ -211,25 +289,42 @@ npm run build
 npm pack --dry-run
 ```
 
-Local n8n development:
+Use `npm run dev` para carregar o node em uma instância local do n8n.
 
-```bash
-npm run dev
-```
+## ✅ Compatibilidade
 
-## Publishing
+- `n8nNodesApiVersion` 1.
+- Node.js 24 no desenvolvimento e publicação.
+- API `2025-03` como padrão.
+- Rotas `v1` e `unstable` selecionadas por operação quando necessário.
+- Nuvemshop Brasil e Tiendanube internacional.
 
-Releases are published only by [GitHub Actions](.github/workflows/publish.yml) with npm provenance.
+## 📚 Recursos
 
-1. Bump `package.json` and `CHANGELOG.md`.
-2. Commit the release.
-3. Create a matching tag, for example `v1.0.0`.
-4. Push the commit and tag.
+- [Nuvemshop API — introdução](https://tiendanube.github.io/api-documentation/intro)
+- [Autenticação](https://tiendanube.github.io/api-documentation/authentication)
+- [Partner Actions](https://tiendanube.github.io/api-documentation/guides/authentication-for-partner-actions)
+- [Webhooks](https://tiendanube.github.io/api-documentation/resources/webhook)
+- [Community nodes do n8n](https://docs.n8n.io/integrations/community-nodes/)
+- [Tools Agent](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.agent/tools-agent)
+- [`$fromAI()`](https://docs.n8n.io/advanced-ai/examples/using-the-fromai-function/)
 
-The workflow checks that the tag matches `package.json`, then runs lint, tests, build, and `npm publish --provenance --access public`. Configure an npm granular token as the repository secret `NPM_TOKEN`, or migrate to npm Trusted Publishing after the package exists.
+## 📈 Versões
 
-## License
+- **1.1.0** — campos guiados, filtros, dropdowns ampliados, defaults seguros e documentação pt-BR otimizada para AI Tools.
+- **1.0.0** — primeira versão pública com 198 operações, paginação, Partner Actions, Custom API Call e Trigger HMAC.
+
+Consulte o [CHANGELOG](CHANGELOG.md) para detalhes técnicos.
+
+## 🆘 Suporte
+
+1. Confira credencial, região, API Version e escopos.
+2. Execute a operação Get antes de mutações para validar IDs e estado.
+3. Consulte os logs do n8n e a mensagem retornada pela API.
+4. Abra uma [issue no GitHub](https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop/issues) com versão do n8n, operação e erro sem incluir tokens.
+
+## 📄 Licença
 
 [MIT](LICENSE.md)
 
-Nuvemshop and its logo are trademarks of their respective owner. This community package is not an official Nuvemshop product.
+Nuvemshop e sua marca pertencem aos respectivos titulares. Este pacote comunitário não é um produto oficial da Nuvemshop.

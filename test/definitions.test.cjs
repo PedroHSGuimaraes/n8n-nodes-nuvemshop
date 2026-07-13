@@ -1,7 +1,13 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { describe, it } = require('node:test');
 
-const { findOperation, resourceDefinitions } = require('../dist/nodes/NuvemShop/actions');
+const {
+	findOperation,
+	resourceDefinitions,
+	resourceProperties,
+} = require('../dist/nodes/NuvemShop/actions');
 
 function placeholders(path) {
 	return [...path.matchAll(/\{([A-Za-z0-9_]+)\}/g)].map((match) => match[1]).sort();
@@ -138,5 +144,172 @@ describe('Nuvem Shop endpoint definitions', () => {
 		assert.equal(typeof example('blog', 'createPost').thumbnail, 'string');
 		assert.ok(example('blog', 'uploadThumbnail').image.$binary);
 		assert.deepEqual(Object.keys(example('page', 'update')).sort(), ['content', 'title']);
+	});
+});
+
+function activeProperties(resource, operationValue) {
+	return resourceProperties.filter((property) => {
+		const show = property.displayOptions?.show;
+		return (
+			show?.resource?.includes(resource) &&
+			(!show.operation || show.operation.includes(operationValue))
+		);
+	});
+}
+
+describe('Nuvem Shop guided UX and AI tool schema', () => {
+	it('defaults to a read operation whenever the resource supports one', () => {
+		for (const resource of resourceDefinitions) {
+			const selector = resourceProperties.find(
+				(property) =>
+					property.name === 'operation' &&
+					property.displayOptions?.show?.resource?.includes(resource.value),
+			);
+			assert.ok(selector, resource.value);
+			const selected = operation(resource.value, selector.default);
+			if (resource.operations.some(({ method }) => method === 'GET')) {
+				assert.equal(selected.method, 'GET', `${resource.value}/${selected.value}`);
+			}
+		}
+	});
+
+	it('exposes required guided fields for common create operations', () => {
+		const required = {
+			category: ['name'],
+			coupon: ['code', 'type', 'value'],
+			customer: ['name', 'email'],
+			draftOrder: ['contactName', 'contactLastname', 'contactEmail', 'paymentStatus', 'products'],
+			product: ['name'],
+		};
+
+		for (const [resource, names] of Object.entries(required)) {
+			const properties = activeProperties(resource, 'create');
+			for (const name of names) {
+				const property = properties.find((candidate) => candidate.name === name);
+				assert.ok(property, `${resource}/create/${name}`);
+				assert.match(property.displayName, /\(Required\)$/);
+				assert.ok(property.description?.length > 30, `${resource}/create/${name} description`);
+			}
+			assert.ok(
+				properties.some(({ name }) => name === 'body'),
+				`${resource}/advanced body`,
+			);
+		}
+	});
+
+	it('scopes enum options to the API operation that defines them', () => {
+		const draftPayment = activeProperties('draftOrder', 'create').find(
+			({ name }) => name === 'paymentStatus',
+		);
+		assert.equal(draftPayment.type, 'options');
+		assert.deepEqual(
+			draftPayment.options
+				.map(({ value }) => value)
+				.filter(Boolean)
+				.sort(),
+			['paid', 'pending_confirmation', 'unpaid'],
+		);
+
+		const orderFields = activeProperties('order', 'create').find(
+			({ name }) => name === 'bodyFields',
+		);
+		const orderPayment = orderFields.options.find(({ name }) => name === 'paymentStatus');
+		assert.equal(orderPayment.type, 'string');
+	});
+
+	it('offers guided fields for every object-shaped body and query example', () => {
+		for (const resource of resourceDefinitions) {
+			for (const operationDefinition of resource.operations) {
+				const properties = activeProperties(resource.value, operationDefinition.value);
+				if (operationDefinition.body && operationDefinition.scope !== 'authorization') {
+					const parsed = JSON.parse(operationDefinition.body.example);
+					if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+						assert.ok(
+							properties.some(
+								({ name }) => name === 'bodyFields' || name === Object.keys(parsed)[0],
+							),
+							`${resource.value}/${operationDefinition.value} guided body`,
+						);
+					}
+				}
+				if (
+					operationDefinition.query &&
+					Object.keys(JSON.parse(operationDefinition.query.example)).length
+				) {
+					assert.ok(
+						properties.some(({ name }) => name === 'filters'),
+						`${resource.value}/${operationDefinition.value} filters`,
+					);
+				}
+			}
+		}
+	});
+
+	it('marks array-shaped request bodies as required JSON arrays', () => {
+		for (const resource of resourceDefinitions) {
+			for (const operationDefinition of resource.operations) {
+				if (
+					!operationDefinition.body ||
+					!Array.isArray(JSON.parse(operationDefinition.body.example))
+				) {
+					continue;
+				}
+				const body = activeProperties(resource.value, operationDefinition.value).find(
+					({ name }) => name === 'body',
+				);
+				assert.ok(body, `${resource.value}/${operationDefinition.value}`);
+				assert.equal(body.required, true);
+				assert.equal(body.default, '[]');
+				assert.match(body.displayName, /\(Required\)$/);
+				assert.match(body.description, /Required JSON array/);
+			}
+		}
+	});
+
+	it('uses dynamic Name or ID selectors where loaders exist', () => {
+		const cases = [
+			['category', 'get', 'id', 'getCategories'],
+			['location', 'get', 'id', 'getLocations'],
+			['product', 'get', 'id', 'getProducts'],
+			['productVariant', 'get', 'product_id', 'getProducts'],
+			['webhook', 'get', 'webhookId', 'getWebhooks'],
+		];
+
+		for (const [resource, operationValue, name, loader] of cases) {
+			const property = activeProperties(resource, operationValue).find(
+				(candidate) => candidate.name === name,
+			);
+			assert.ok(property, `${resource}/${operationValue}/${name}`);
+			assert.equal(property.type, 'options');
+			assert.equal(property.typeOptions.loadOptionsMethod, loader);
+			assert.match(property.displayName, /Name or ID$/);
+		}
+	});
+});
+
+describe('README documentation contract', () => {
+	it('contains the complete pt-BR onboarding and support structure', () => {
+		const readme = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
+		for (const heading of [
+			'Funcionalidades',
+			'Instalação',
+			'Credenciais',
+			'Nós e operações',
+			'Preenchimento guiado',
+			'Exemplos',
+			'Tool de IA',
+			'Webhook Trigger',
+			'Solução de problemas',
+			'Compatibilidade',
+			'Recursos',
+			'Versões',
+			'Suporte',
+			'Licença',
+		]) {
+			assert.match(readme, new RegExp(`^## .*${heading}`, 'm'), heading);
+		}
+		assert.match(readme, /N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true/);
+		assert.match(readme, /\$fromAI\(key, description\?, type\?, defaultValue\?\)/);
+		assert.match(readme, /198 operações/);
 	});
 });
