@@ -36,10 +36,49 @@ function assertRelativeEndpoint(
 	itemIndex: number,
 ): string {
 	const normalized = endpoint.trim();
-	if (!normalized.startsWith('/') || normalized.startsWith('//') || normalized.includes('://')) {
+	const path = normalized.split(/[?#]/, 1)[0];
+	const containsControlCharacter = (value: string) =>
+		[...value].some((character) => {
+			const code = character.charCodeAt(0);
+			return code <= 0x1f || code === 0x7f;
+		});
+	const hasControlCharacter = containsControlCharacter(normalized);
+	const hasUnsafePathSegment = path.split('/').some((segment) => {
+		let decoded = segment;
+		let fullyDecoded = false;
+		for (let pass = 0; pass < 8; pass++) {
+			try {
+				const next = decodeURIComponent(decoded);
+				if (next === decoded) {
+					fullyDecoded = true;
+					break;
+				}
+				decoded = next;
+			} catch {
+				return true;
+			}
+		}
+
+		return (
+			!fullyDecoded ||
+			decoded === '.' ||
+			decoded === '..' ||
+			decoded.includes('/') ||
+			decoded.includes('\\') ||
+			containsControlCharacter(decoded)
+		);
+	});
+	if (
+		!normalized.startsWith('/') ||
+		normalized.startsWith('//') ||
+		normalized.includes('://') ||
+		normalized.includes('\\') ||
+		hasControlCharacter ||
+		hasUnsafePathSegment
+	) {
 		throw new NodeOperationError(
 			context.getNode(),
-			'Endpoint must be a relative Nuvemshop API path beginning with one slash, for example /products. Domains and full URLs are not allowed.',
+			'Endpoint must be a safe relative Nuvemshop API path beginning with one slash, for example /products. Domains, full URLs, backslashes, control characters, and path traversal segments are not allowed.',
 			{ itemIndex },
 		);
 	}

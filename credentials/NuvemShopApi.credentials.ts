@@ -108,7 +108,7 @@ export class NuvemShopApi implements ICredentialType {
 			displayName: 'User Agent',
 			name: 'userAgent',
 			type: 'string',
-			default: 'n8n-nodes-nuvemshop (pedro.guimaraes02@hotmail.com)',
+			default: 'n8n-nodes-nuvemshop (https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop)',
 			required: true,
 			description:
 				'Application name plus a contact email or URL. Nuvemshop requires this header on every request and returns HTTP 400 when it is missing.',

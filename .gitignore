@@ -8,3 +8,6 @@ coverage/
 .DS_Store
 *.tgz
 .claude-flow/
+.claude/
+.mcp.json
+CLAUDE.md
