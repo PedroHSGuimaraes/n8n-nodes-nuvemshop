@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 1.1.1 - 2026-07-13
+
+- Fixed the n8n node creator incorrectly opening only Nuvem Shop Trigger after a trigger node.
+- Restored all 198 regular Nuvem Shop actions while preserving automatic AI Tool support.
+- Added a metadata regression test for regular-action and AI Tool compatibility.
+
 ## 1.1.0 - 2026-07-13
 
 - Added guided, typed body fields and common query filters while preserving Advanced JSON compatibility.

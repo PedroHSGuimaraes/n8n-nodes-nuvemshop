@@ -8,6 +8,7 @@ const {
 	resourceDefinitions,
 	resourceProperties,
 } = require('../dist/nodes/NuvemShop/actions');
+const { NuvemShop } = require('../dist/nodes/NuvemShop/NuvemShop.node');
 
 function placeholders(path) {
 	return [...path.matchAll(/\{([A-Za-z0-9_]+)\}/g)].map((match) => match[1]).sort();
@@ -158,6 +159,19 @@ function activeProperties(resource, operationValue) {
 }
 
 describe('Nuvem Shop guided UX and AI tool schema', () => {
+	it('keeps regular actions visible while exposing the node as an AI tool', () => {
+		const metadata = JSON.parse(
+			fs.readFileSync(
+				path.join(__dirname, '..', 'dist', 'nodes', 'NuvemShop', 'NuvemShop.node.json'),
+				'utf8',
+			),
+		);
+
+		assert.equal(new NuvemShop().description.usableAsTool, true);
+		assert.equal(metadata.categories.includes('AI'), false);
+		assert.equal(metadata.subcategories?.AI?.includes('Tools') ?? false, false);
+	});
+
 	it('defaults to a read operation whenever the resource supports one', () => {
 		for (const resource of resourceDefinitions) {
 			const selector = resourceProperties.find(

@@ -2,10 +2,7 @@
 	"node": "n8n-nodes-nuvemshop.nuvemShop",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
-	"categories": ["Sales", "Marketing", "AI"],
-	"subcategories": {
-		"AI": ["Tools"]
-	},
+	"categories": ["Sales", "Marketing"],
 	"resources": {
 		"credentialDocumentation": [
 			{
