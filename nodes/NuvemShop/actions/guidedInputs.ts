@@ -14,6 +14,7 @@ interface GuidedField {
 }
 
 const REQUIRED_FIELDS: Record<string, string[]> = {
+	'POST /checkouts/{cartId}/coupon': ['coupon_id'],
 	'POST /categories': ['name'],
 	'POST /coupons': ['code', 'type', 'value'],
 	'POST /customers': ['name', 'email'],
@@ -25,6 +26,10 @@ const REQUIRED_FIELDS: Record<string, string[]> = {
 		'products',
 	],
 	'POST /products': ['name'],
+};
+
+const FIELD_LOAD_OPTIONS: Record<string, string> = {
+	'POST /checkouts/{cartId}/coupon:coupon_id': 'getCoupons',
 };
 
 const FIELD_OPTIONS: Record<string, Array<{ name: string; value: string }>> = {
@@ -125,12 +130,16 @@ function guidedFields(
 	return Object.entries(example).map(([apiName, value]) => {
 		const inferred = fieldType(value);
 		const options = FIELD_OPTIONS[`${operationKey(operation)}:${apiName}`];
+		const loadOptionsMethod = FIELD_LOAD_OPTIONS[`${operationKey(operation)}:${apiName}`];
 		const property: INodeProperties = {
-			displayName: displayName(apiName),
+			displayName: loadOptionsMethod
+				? displayName(apiName).replace(/ ID$/, ' Name or ID')
+				: displayName(apiName),
 			name: camelCase(apiName),
-			type: options ? 'options' : inferred.type,
+			type: options || loadOptionsMethod ? 'options' : inferred.type,
+			typeOptions: loadOptionsMethod ? { loadOptionsMethod } : undefined,
 			options,
-			default: options ? (options[0]?.value ?? '') : inferred.defaultValue,
+			default: options || loadOptionsMethod ? (options?.[0]?.value ?? '') : inferred.defaultValue,
 			description: fieldDescription(apiName, value, inferred.kind),
 		};
 		return {
@@ -157,12 +166,16 @@ export function guidedBodyProperties(
 			return {
 				...field.property,
 				displayName: `${field.property.displayName} (Required)`,
+				required: operation.advancedBody === false ? true : undefined,
 				default: field.property.type === 'options' ? '' : field.property.default,
 				options:
 					field.property.type === 'options' && Array.isArray(options)
 						? [{ name: 'Select a Value', value: '' }, ...options]
 						: options,
-				description: `Required by the API. Provide it here or in Advanced Body (JSON). ${field.property.description}`,
+				description:
+					operation.advancedBody === false
+						? `Required by the API. ${field.property.description}`
+						: `Required by the API. Provide it here or in Advanced Body (JSON). ${field.property.description}`,
 				displayOptions,
 			};
 		});
@@ -266,6 +279,10 @@ function apiValue(
 	itemIndex: number,
 ): unknown {
 	if (field.kind === 'json') return parseJsonField(context, value, field, itemIndex);
+	if (typeof field.example === 'number' && typeof value === 'string' && value.trim()) {
+		const number = Number(value);
+		if (Number.isFinite(number)) return number;
+	}
 	if (field.kind === 'translation') {
 		const language = String(context.getNodeParameter('contentLanguage', itemIndex, 'pt'));
 		return { [language]: value };

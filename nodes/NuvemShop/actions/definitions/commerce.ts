@@ -159,6 +159,7 @@ export const commerceResources: NuvemShopResourceDefinition[] = [
 				path: '/checkouts/{cartId}/coupon',
 				pathParameters: [cartId],
 				body: jsonBody('Coupon assignment payload.', '{"coupon_id":32967}'),
+				advancedBody: false,
 			},
 			{
 				name: 'Get',

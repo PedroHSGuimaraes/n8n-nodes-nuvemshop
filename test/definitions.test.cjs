@@ -211,6 +211,25 @@ describe('Nuvem Shop guided UX and AI tool schema', () => {
 		}
 	});
 
+	it('makes abandoned-checkout coupon assignment fully guided', () => {
+		const properties = activeProperties('abandonedCheckout', 'applyCoupon');
+		const coupon = properties.find(({ name }) => name === 'couponId');
+
+		assert.ok(coupon);
+		assert.equal(coupon.displayName, 'Coupon Name or ID (Required)');
+		assert.equal(coupon.type, 'options');
+		assert.equal(coupon.typeOptions.loadOptionsMethod, 'getCoupons');
+		assert.equal(coupon.required, true);
+		assert.equal(
+			properties.some(({ name }) => name === 'bodyFields'),
+			false,
+		);
+		assert.equal(
+			properties.some(({ name }) => name === 'body'),
+			false,
+		);
+	});
+
 	it('scopes enum options to the API operation that defines them', () => {
 		const draftPayment = activeProperties('draftOrder', 'create').find(
 			({ name }) => name === 'paymentStatus',
@@ -238,10 +257,12 @@ describe('Nuvem Shop guided UX and AI tool schema', () => {
 				if (operationDefinition.body && operationDefinition.scope !== 'authorization') {
 					const parsed = JSON.parse(operationDefinition.body.example);
 					if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+						const firstGuidedName = Object.keys(parsed)[0].replace(
+							/_([a-z0-9])/g,
+							(_match, character) => character.toUpperCase(),
+						);
 						assert.ok(
-							properties.some(
-								({ name }) => name === 'bodyFields' || name === Object.keys(parsed)[0],
-							),
+							properties.some(({ name }) => name === 'bodyFields' || name === firstGuidedName),
 							`${resource.value}/${operationDefinition.value} guided body`,
 						);
 					}
@@ -282,6 +303,7 @@ describe('Nuvem Shop guided UX and AI tool schema', () => {
 
 	it('uses dynamic Name or ID selectors where loaders exist', () => {
 		const cases = [
+			['abandonedCheckout', 'applyCoupon', 'couponId', 'getCoupons'],
 			['category', 'get', 'id', 'getCategories'],
 			['location', 'get', 'id', 'getLocations'],
 			['product', 'get', 'id', 'getProducts'],
@@ -296,7 +318,7 @@ describe('Nuvem Shop guided UX and AI tool schema', () => {
 			assert.ok(property, `${resource}/${operationValue}/${name}`);
 			assert.equal(property.type, 'options');
 			assert.equal(property.typeOptions.loadOptionsMethod, loader);
-			assert.match(property.displayName, /Name or ID$/);
+			assert.match(property.displayName, /Name or ID(?: \(Required\))?$/);
 		}
 	});
 });

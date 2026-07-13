@@ -67,7 +67,7 @@ function operationFields(
 				displayOptions,
 				description: `${operation.body.description} Required JSON array for this operation. Example: ${operation.body.example}.`,
 			});
-		} else {
+		} else if (operation.advancedBody !== false) {
 			properties.push({
 				displayName:
 					operation.bodyType === 'multipart'

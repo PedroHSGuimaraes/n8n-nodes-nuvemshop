@@ -122,6 +122,24 @@ describe('Nuvem Shop request security', () => {
 });
 
 describe('Nuvem Shop guided request fields', () => {
+	it('applies a selected coupon without requiring Advanced Body JSON', async () => {
+		let receivedOptions;
+		const applyCoupon = findOperation('abandonedCheckout', 'applyCoupon');
+		assert.ok(applyCoupon);
+
+		await executeDefinedOperation.call(
+			definedApiContext({ cartId: '397256730', couponId: '32967' }, (_credentialType, options) => {
+				receivedOptions = options;
+				return { id: 397256730 };
+			}),
+			applyCoupon,
+			0,
+		);
+
+		assert.equal(receivedOptions.url, '/checkouts/397256730/coupon');
+		assert.deepEqual(receivedOptions.body, { coupon_id: 32967 });
+	});
+
 	it('merges guided product fields over advanced JSON and converts API shapes', async () => {
 		let receivedOptions;
 		const parameters = {

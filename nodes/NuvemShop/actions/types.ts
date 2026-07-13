@@ -27,6 +27,7 @@ export interface NuvemShopOperationDefinition {
 	pathParameters?: NuvemShopPathParameter[];
 	body?: NuvemShopJsonInput;
 	bodyType?: 'json' | 'multipart';
+	advancedBody?: boolean;
 	query?: NuvemShopJsonInput;
 	paginated?: boolean;
 	responseProperty?: string;

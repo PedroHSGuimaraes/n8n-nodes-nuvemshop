@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-nuvemshop",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "Complete n8n community node for the Nuvemshop API, with AI Agent tool support, all documented resources, pagination, partner actions, custom API calls and webhook triggers.",
 	"keywords": [
 		"n8n-community-node-package",

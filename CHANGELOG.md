@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 1.1.2 - 2026-07-13
+
+- Replaced the abandoned-checkout coupon JSON input with a required Coupon Name-or-ID selector.
+- Loaded existing store coupons dynamically and converted the selected ID to the numeric API value.
+- Removed unnecessary Additional Fields and Advanced Body JSON from this single-field operation.
+
 ## 1.1.1 - 2026-07-13
 
 - Fixed the n8n node creator incorrectly opening only Nuvem Shop Trigger after a trigger node.
