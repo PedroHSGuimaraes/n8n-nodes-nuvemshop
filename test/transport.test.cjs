@@ -122,6 +122,53 @@ describe('Nuvem Shop request security', () => {
 });
 
 describe('Nuvem Shop guided request fields', () => {
+	it('serializes multi-select query filters as comma-separated API values', async () => {
+		let receivedOptions;
+		const getManyOrders = findOperation('order', 'getMany');
+		await executeDefinedOperation.call(
+			definedApiContext(
+				{
+					filters: {
+						aggregates: ['fulfillment_orders', 'custom_fields'],
+						fields: ['id', 'number', 'total'],
+					},
+					returnAll: false,
+					limit: 10,
+				},
+				(_credentialType, options) => {
+					receivedOptions = options;
+					return [];
+				},
+			),
+			getManyOrders,
+			0,
+		);
+
+		assert.equal(receivedOptions.qs.aggregates, 'fulfillment_orders,custom_fields');
+		assert.equal(receivedOptions.qs.fields, 'id,number,total');
+	});
+
+	it('preserves API arrays selected through multi-select fields', async () => {
+		let receivedOptions;
+		const createProduct = findOperation('product', 'create');
+		await executeDefinedOperation.call(
+			definedApiContext(
+				{
+					name: 'Camiseta',
+					bodyFields: { categories: ['4567', '5678'] },
+				},
+				(_credentialType, options) => {
+					receivedOptions = options;
+					return { id: 1234 };
+				},
+			),
+			createProduct,
+			0,
+		);
+
+		assert.deepEqual(receivedOptions.body.categories, [4567, 5678]);
+	});
+
 	it('applies a selected coupon without requiring Advanced Body JSON', async () => {
 		let receivedOptions;
 		const applyCoupon = findOperation('abandonedCheckout', 'applyCoupon');

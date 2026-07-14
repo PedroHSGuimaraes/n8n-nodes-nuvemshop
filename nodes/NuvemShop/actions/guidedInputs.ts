@@ -1,6 +1,7 @@
 import type { IDataObject, IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
 
+import { NUVEMSHOP_WEBHOOK_EVENTS } from '../../shared/webhookEvents';
 import type { NuvemShopJsonInput, NuvemShopOperationDefinition } from './types';
 
 type GuidedValueKind = 'direct' | 'json' | 'primitiveArray' | 'translation';
@@ -11,6 +12,14 @@ interface GuidedField {
 	property: INodeProperties;
 	kind: GuidedValueKind;
 	example: unknown;
+	multiValueFormat?: 'array' | 'comma';
+}
+
+type FieldOption = { name: string; value: string };
+
+interface MultiFieldOptions {
+	options: FieldOption[];
+	format: 'array' | 'comma';
 }
 
 const REQUIRED_FIELDS: Record<string, string[]> = {
@@ -28,11 +37,28 @@ const REQUIRED_FIELDS: Record<string, string[]> = {
 	'POST /products': ['name'],
 };
 
-const FIELD_LOAD_OPTIONS: Record<string, string> = {
-	'POST /checkouts/{cartId}/coupon:coupon_id': 'getCoupons',
+const FIELD_LOAD_OPTIONS: Record<
+	string,
+	{ method: string; multiple?: boolean; format?: 'array' | 'comma' }
+> = {
+	'POST /checkouts/{cartId}/coupon:coupon_id': { method: 'getCoupons' },
+	'POST /products:categories': { method: 'getCategories', multiple: true, format: 'array' },
+	'PUT /products/{id}:categories': {
+		method: 'getCategories',
+		multiple: true,
+		format: 'array',
+	},
+	'GET /categories:parent_id': { method: 'getCategories' },
+	'GET /products:category_id': { method: 'getCategories' },
+	'GET /products:ids': { method: 'getProducts', multiple: true, format: 'comma' },
+	'GET /orders:customer_ids': {
+		method: 'getCustomers',
+		multiple: true,
+		format: 'comma',
+	},
 };
 
-const FIELD_OPTIONS: Record<string, Array<{ name: string; value: string }>> = {
+const FIELD_OPTIONS: Record<string, FieldOption[]> = {
 	'POST /draft_orders:payment_status': [
 		{ name: 'Paid', value: 'paid' },
 		{ name: 'Pending Confirmation', value: 'pending_confirmation' },
@@ -46,7 +72,259 @@ const FIELD_OPTIONS: Record<string, Array<{ name: string; value: string }>> = {
 		{ name: 'Hidden', value: 'hidden' },
 		{ name: 'Visible', value: 'visible' },
 	],
+	'POST /coupons:type': [
+		{ name: 'Percentage', value: 'percentage' },
+		{ name: 'Absolute', value: 'absolute' },
+		{ name: 'Free Shipping', value: 'shipping' },
+	],
+	'PUT /coupons/{couponId}:type': [
+		{ name: 'Percentage', value: 'percentage' },
+		{ name: 'Absolute', value: 'absolute' },
+		{ name: 'Free Shipping', value: 'shipping' },
+	],
+	'POST /products/{product_id}/variants:age_group': [
+		{ name: 'Newborn', value: 'newborn' },
+		{ name: 'Infant', value: 'infant' },
+		{ name: 'Toddler', value: 'toddler' },
+		{ name: 'Kids', value: 'kids' },
+		{ name: 'Adult', value: 'adult' },
+	],
+	'POST /products/{product_id}/variants:gender': [
+		{ name: 'Female', value: 'female' },
+		{ name: 'Male', value: 'male' },
+		{ name: 'Unisex', value: 'unisex' },
+	],
+	'POST /products/{product_id}/variants/stock:action': [
+		{ name: 'Replace', value: 'replace' },
+		{ name: 'Variation (Add/Subtract)', value: 'variation' },
+	],
+	'POST /metafields:owner_resource': [
+		{ name: 'Product', value: 'Product' },
+		{ name: 'Product Variant', value: 'Product_Variant' },
+		{ name: 'Category', value: 'Category' },
+		{ name: 'Page', value: 'Page' },
+		{ name: 'Order', value: 'Order' },
+		{ name: 'Customer', value: 'Customer' },
+	],
+	'PUT /business_rules/integrations/{domain}:event': [
+		{ name: 'Payments: Before Filter', value: 'payments/before-filter' },
+		{ name: 'Shipping: Before Filter', value: 'shipping/before-filter' },
+		{ name: 'Location: Prioritization', value: 'location/prioritization' },
+		{ name: 'Cart: Before Finish', value: 'cart/before-finish' },
+	],
+	'POST /promotions:allocation_type': [
+		{ name: 'Line Item', value: 'line_item' },
+		{ name: 'Cross Items', value: 'cross_items' },
+	],
+	'POST /orders:payment_status': [
+		{ name: 'Pending', value: 'pending' },
+		{ name: 'Authorized', value: 'authorized' },
+		{ name: 'Paid', value: 'paid' },
+	],
+	'POST /orders:fulfillment': [
+		{ name: 'Unpacked', value: 'unpacked' },
+		{ name: 'Unfulfilled', value: 'unfulfilled' },
+		{ name: 'Fulfilled', value: 'fulfilled' },
+	],
+	'POST /orders:shipping_pickup_type': [
+		{ name: 'Ship', value: 'ship' },
+		{ name: 'Pickup', value: 'pickup' },
+	],
+	'PUT /orders/{orderId}:status': [
+		{ name: 'Open', value: 'open' },
+		{ name: 'Closed', value: 'closed' },
+		{ name: 'Cancelled', value: 'cancelled' },
+	],
+	'POST /orders/{orderId}/cancel:reason': [
+		{ name: 'Customer', value: 'customer' },
+		{ name: 'Inventory', value: 'inventory' },
+		{ name: 'Fraud', value: 'fraud' },
+		{ name: 'Other', value: 'other' },
+	],
+	'PATCH /orders/{order_id}/fulfillment-orders/{fulfillment_order_id}:status': [
+		{ name: 'Unpacked', value: 'UNPACKED' },
+		{ name: 'Packed', value: 'PACKED' },
+		{ name: 'Dispatched', value: 'DISPATCHED' },
+		{ name: 'Ready for Pickup', value: 'READY_FOR_PICKUP' },
+		{ name: 'Delivered', value: 'DELIVERED' },
+	],
+	'PATCH /fulfillment-orders/{fulfillment_order_id}/labels/{label_id}:status': [
+		{ name: 'Ready to Download', value: 'READY_TO_DOWNLOAD' },
+		{ name: 'Ready to Use', value: 'READY_TO_USE' },
+		{ name: 'Failed', value: 'FAILED' },
+		{ name: 'Canceled', value: 'CANCELED' },
+		{ name: 'Suspended', value: 'SUSPENDED' },
+	],
+	'POST /orders/{orderId}/transactions/{transactionId}/events:type': [
+		{ name: 'Authorization', value: 'authorization' },
+		{ name: 'Capture', value: 'capture' },
+		{ name: 'Refund', value: 'refund' },
+		{ name: 'Sale', value: 'sale' },
+		{ name: 'Void', value: 'void' },
+		{ name: 'Expiration', value: 'expiration' },
+		{ name: 'Fraud Analysis', value: 'fraud_analysis' },
+	],
+	'POST /orders/{orderId}/transactions/{transactionId}/events:status': [
+		{ name: 'Error', value: 'error' },
+		{ name: 'Failure', value: 'failure' },
+		{ name: 'Pending', value: 'pending' },
+		{ name: 'Success', value: 'success' },
+	],
+	'GET /orders:payment_status': [
+		{ name: 'Any', value: 'any' },
+		{ name: 'Pending', value: 'pending' },
+		{ name: 'Authorized', value: 'authorized' },
+		{ name: 'Paid', value: 'paid' },
+		{ name: 'Abandoned', value: 'abandoned' },
+		{ name: 'Refunded', value: 'refunded' },
+		{ name: 'Voided', value: 'voided' },
+	],
+	'GET /orders:status': [
+		{ name: 'Any', value: 'any' },
+		{ name: 'Open', value: 'open' },
+		{ name: 'Closed', value: 'closed' },
+		{ name: 'Cancelled', value: 'cancelled' },
+	],
+	'GET /orders:channels': [
+		{ name: 'Draft Order (Admin/API)', value: 'form' },
+		{ name: 'Storefront', value: 'store' },
+		{ name: 'API', value: 'api' },
+		{ name: 'Mercado Libre', value: 'meli' },
+		{ name: 'Point of Sale', value: 'pos' },
+	],
+	'GET /orders:shipping_status': [
+		{ name: 'Any', value: 'any' },
+		{ name: 'Unpacked', value: 'unpacked' },
+		{ name: 'Unfulfilled (Unshipped)', value: 'unfulfilled' },
+		{ name: 'Fulfilled (Shipped)', value: 'fulfilled' },
+	],
+	'GET /products:sort_by': [
+		{ name: 'User Defined', value: 'user' },
+		{ name: 'Price: Low to High', value: 'price-ascending' },
+		{ name: 'Price: High to Low', value: 'price-descending' },
+		{ name: 'Cost: Low to High', value: 'cost-ascending' },
+		{ name: 'Cost: High to Low', value: 'cost-descending' },
+		{ name: 'Name: A to Z', value: 'alpha-ascending' },
+		{ name: 'Name: Z to A', value: 'alpha-descending' },
+		{ name: 'Name: Ascending', value: 'name-ascending' },
+		{ name: 'Name: Descending', value: 'name-descending' },
+		{ name: 'Created: Oldest First', value: 'created-at-ascending' },
+		{ name: 'Created: Newest First', value: 'created-at-descending' },
+		{ name: 'Best Selling', value: 'best-selling' },
+	],
+	'GET /coupons:status': [
+		{ name: 'Activated', value: 'activated' },
+		{ name: 'Deactivated', value: 'deactivated' },
+	],
+	'GET /coupons:limitation_type': [
+		{ name: 'Quantity', value: 'quantity' },
+		{ name: 'Cart Value', value: 'cart_value' },
+		{ name: 'Categories', value: 'categories' },
+	],
+	'GET /coupons:term_type': [
+		{ name: 'Unlimited', value: 'unlimited' },
+		{ name: 'Limited', value: 'limited' },
+	],
+	'GET /coupons:discount_type': [
+		{ name: 'Percentage', value: 'percentage' },
+		{ name: 'Absolute', value: 'absolute' },
+		{ name: 'Free Shipping', value: 'shipping' },
+	],
+	'GET /coupons:sort_by': [
+		{ name: 'Created: Oldest First', value: 'created-at-ascending' },
+		{ name: 'Created: Newest First', value: 'created-at-descending' },
+		{ name: 'Code: A to Z', value: 'alpha-ascending' },
+		{ name: 'Code: Z to A', value: 'alpha-descending' },
+		{ name: 'Uses: Low to High', value: 'uses-ascending' },
+		{ name: 'Uses: High to Low', value: 'uses-descending' },
+	],
+	'POST /fulfillment-orders/{fulfillment_order_id}/labels/{label_id}/download:format': [
+		{ name: 'PDF', value: 'PDF' },
+		{ name: 'TXT', value: 'TXT' },
+		{ name: 'ZPL', value: 'ZPL' },
+		{ name: 'HTML', value: 'HTML' },
+		{ name: 'XML', value: 'XML' },
+	],
 };
+
+const FIELD_MULTI_OPTIONS: Record<string, MultiFieldOptions> = {
+	'GET /orders:aggregates': {
+		options: [
+			{ name: 'Fulfillment Orders', value: 'fulfillment_orders' },
+			{ name: 'Custom Fields', value: 'custom_fields' },
+		],
+		format: 'comma',
+	},
+	'GET /orders/{orderId}:aggregates': {
+		options: [{ name: 'Fulfillment Orders', value: 'fulfillment_orders' }],
+		format: 'comma',
+	},
+	'GET /orders/{order_id}/fulfillment-orders:aggregates': {
+		options: [{ name: 'Custom Fields', value: 'custom_fields' }],
+		format: 'comma',
+	},
+	'POST /fulfillment-orders/{fulfillment_order_id}/labels/{label_id}/download:types': {
+		options: [
+			{ name: 'Label', value: 'LABEL' },
+			{ name: 'Content Declaration', value: 'CONTENT_DECLARATION' },
+		],
+		format: 'comma',
+	},
+	'POST /locations:tags': {
+		options: [
+			{ name: 'Online', value: 'online' },
+			{ name: 'Offline', value: 'offline' },
+		],
+		format: 'array',
+	},
+	'PUT /locations/{id}:tags': {
+		options: [
+			{ name: 'Online', value: 'online' },
+			{ name: 'Offline', value: 'offline' },
+		],
+		format: 'array',
+	},
+	'POST /shipping_carriers:types': {
+		options: [
+			{ name: 'Ship', value: 'ship' },
+			{ name: 'Pickup', value: 'pickup' },
+		],
+		format: 'comma',
+	},
+	'PUT /shipping_carriers/{id}:types': {
+		options: [
+			{ name: 'Ship', value: 'ship' },
+			{ name: 'Pickup', value: 'pickup' },
+		],
+		format: 'comma',
+	},
+};
+
+const CUSTOM_FIELD_TYPES: FieldOption[] = [
+	{ name: 'Text List', value: 'text_list' },
+	{ name: 'Text', value: 'text' },
+	{ name: 'Numeric', value: 'numeric' },
+	{ name: 'Date', value: 'date' },
+];
+
+const TRACKING_STATUSES: FieldOption[] = [
+	{ name: 'Dispatched', value: 'dispatched' },
+	{ name: 'Received by Post Office', value: 'received_by_post_office' },
+	{ name: 'In Transit', value: 'in_transit' },
+	{ name: 'Out for Delivery', value: 'out_for_delivery' },
+	{ name: 'Delivery Attempt Failed', value: 'delivery_attempt_failed' },
+	{ name: 'Delayed', value: 'delayed' },
+	{ name: 'Ready for Pickup', value: 'ready_for_pickup' },
+	{ name: 'Delivered', value: 'delivered' },
+	{ name: 'Returned to Sender', value: 'returned_to_sender' },
+	{ name: 'Lost', value: 'lost' },
+	{ name: 'Failure', value: 'failure' },
+];
+
+const WEBHOOK_EVENTS = NUVEMSHOP_WEBHOOK_EVENTS.map((event) => ({
+	name: displayName(event.replaceAll('/', '_')),
+	value: event,
+}));
 
 function operationKey(operation: NuvemShopOperationDefinition): string {
 	return `${operation.method} ${operation.path}`;
@@ -64,6 +342,66 @@ function displayName(value: string): string {
 			return `${part.charAt(0).toUpperCase()}${part.slice(1)}`;
 		})
 		.join(' ');
+}
+
+function queryFieldOptions(
+	operation: NuvemShopOperationDefinition,
+	apiName: string,
+	value: unknown,
+	isQuery: boolean,
+): { options: FieldOption[]; multiple: boolean; format?: 'array' | 'comma' } | undefined {
+	const key = `${operationKey(operation)}:${apiName}`;
+	const multipleOptions = FIELD_MULTI_OPTIONS[key];
+	if (multipleOptions) {
+		return { options: multipleOptions.options, multiple: true, format: multipleOptions.format };
+	}
+
+	const options = FIELD_OPTIONS[key];
+	if (options) return { options, multiple: false };
+	if (
+		apiName === 'value_type' &&
+		operation.method === 'POST' &&
+		operation.path.includes('custom-fields')
+	) {
+		return { options: CUSTOM_FIELD_TYPES, multiple: false };
+	}
+	if (apiName === 'status' && operation.path.includes('/tracking-events')) {
+		return { options: TRACKING_STATUSES, multiple: false };
+	}
+	if (apiName === 'status' && operation.path === '/orders/{order_id}/fulfillments') {
+		return { options: TRACKING_STATUSES, multiple: false };
+	}
+	if (apiName === 'event' && operation.path.includes('/webhooks')) {
+		return { options: WEBHOOK_EVENTS, multiple: false };
+	}
+	if (isQuery && apiName === 'language') {
+		return {
+			options: [
+				{ name: 'Português', value: 'pt' },
+				{ name: 'Português (Brasil)', value: 'pt_BR' },
+				{ name: 'Español', value: 'es' },
+				{ name: 'Español (Argentina)', value: 'es_AR' },
+				{ name: 'English', value: 'en' },
+			],
+			multiple: false,
+		};
+	}
+
+	if (isQuery && apiName === 'fields' && typeof value === 'string') {
+		const fieldNames = value
+			.split(',')
+			.map((field) => field.trim())
+			.filter(Boolean);
+		if (fieldNames.length) {
+			return {
+				options: fieldNames.map((field) => ({ name: displayName(field), value: field })),
+				multiple: true,
+				format: 'comma',
+			};
+		}
+	}
+
+	return undefined;
 }
 
 function parsedExample(input: NuvemShopJsonInput): unknown {
@@ -129,17 +467,24 @@ function guidedFields(
 
 	return Object.entries(example).map(([apiName, value]) => {
 		const inferred = fieldType(value);
-		const options = FIELD_OPTIONS[`${operationKey(operation)}:${apiName}`];
-		const loadOptionsMethod = FIELD_LOAD_OPTIONS[`${operationKey(operation)}:${apiName}`];
+		const selection = queryFieldOptions(operation, apiName, value, input === operation.query);
+		const options = selection?.options;
+		const loadedOptions = FIELD_LOAD_OPTIONS[`${operationKey(operation)}:${apiName}`];
+		const loadOptionsMethod = loadedOptions?.method;
+		const multiple = selection?.multiple || loadedOptions?.multiple;
 		const property: INodeProperties = {
 			displayName: loadOptionsMethod
 				? displayName(apiName).replace(/ ID$/, ' Name or ID')
 				: displayName(apiName),
 			name: camelCase(apiName),
-			type: options || loadOptionsMethod ? 'options' : inferred.type,
+			type: multiple ? 'multiOptions' : options || loadOptionsMethod ? 'options' : inferred.type,
 			typeOptions: loadOptionsMethod ? { loadOptionsMethod } : undefined,
 			options,
-			default: options || loadOptionsMethod ? (options?.[0]?.value ?? '') : inferred.defaultValue,
+			default: multiple
+				? []
+				: options || loadOptionsMethod
+					? (options?.[0]?.value ?? '')
+					: inferred.defaultValue,
 			description: fieldDescription(apiName, value, inferred.kind),
 		};
 		return {
@@ -148,6 +493,7 @@ function guidedFields(
 			property,
 			kind: inferred.kind,
 			example: value,
+			multiValueFormat: selection?.format ?? loadedOptions?.format,
 		};
 	});
 }
@@ -278,6 +624,15 @@ function apiValue(
 	field: GuidedField,
 	itemIndex: number,
 ): unknown {
+	if (field.property.type === 'multiOptions' && Array.isArray(value)) {
+		if (field.multiValueFormat === 'array') {
+			if (Array.isArray(field.example) && field.example.every((item) => typeof item === 'number')) {
+				return value.map(Number);
+			}
+			return value;
+		}
+		return value.join(',');
+	}
 	if (field.kind === 'json') return parseJsonField(context, value, field, itemIndex);
 	if (typeof field.example === 'number' && typeof value === 'string' && value.trim()) {
 		const number = Number(value);

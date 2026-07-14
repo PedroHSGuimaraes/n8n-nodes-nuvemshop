@@ -182,7 +182,7 @@ export const commerceResources: NuvemShopResourceDefinition[] = [
 				paginated: true,
 				query: jsonQuery(
 					'Supported filters include since_id, created_at_max, updated_at_max, and fields.',
-					'{"updated_at_max":"2026-07-10T23:59:59Z","fields":"id,customer,products,total"}',
+					'{"since_id":100,"created_at_max":"2026-07-10T23:59:59Z","updated_at_max":"2026-07-10T23:59:59Z","fields":"id,customer,products,total,created_at,updated_at"}',
 				),
 			},
 		],
@@ -243,7 +243,8 @@ export const commerceResources: NuvemShopResourceDefinition[] = [
 				'{"code":"WELCOME10","type":"percentage","value":"10.00","valid":true,"start_date":"2026-07-10","end_date":"2026-08-10"}',
 			listQueryDescription:
 				'Supported filters include q, valid, status, limitation_type, term_type, discount_type, includes_shipping, min/max start and end dates, sort_by, created_at_*, updated_at_*, and fields.',
-			listQueryExample: '{"valid":true,"status":"activated","fields":"id,code,type,value"}',
+			listQueryExample:
+				'{"q":"WELCOME","valid":true,"status":"activated","limitation_type":"quantity","term_type":"limited","discount_type":"percentage","includes_shipping":true,"min_start_date":"2026-01-01","min_end_date":"2026-01-01","max_start_date":"2026-12-31","max_end_date":"2026-12-31","sort_by":"created-at-descending","created_at_min":"2026-01-01T00:00:00Z","created_at_max":"2026-12-31T23:59:59Z","updated_at_min":"2026-01-01T00:00:00Z","updated_at_max":"2026-12-31T23:59:59Z","fields":"id,code,type,value,valid,start_date,end_date,used,max_uses"}',
 		}),
 	},
 	{
@@ -259,7 +260,8 @@ export const commerceResources: NuvemShopResourceDefinition[] = [
 				'{"name":"Maria Silva","email":"maria@example.com","phone":"+5511999999999","identification":"12345678909"}',
 			listQueryDescription:
 				'Supported filters include since_id, q, email, created_at_min, created_at_max, updated_at_min, updated_at_max, and fields.',
-			listQueryExample: '{"email":"maria@example.com","fields":"id,name,email,updated_at"}',
+			listQueryExample:
+				'{"since_id":100,"q":"Maria","email":"maria@example.com","created_at_min":"2026-01-01T00:00:00Z","created_at_max":"2026-12-31T23:59:59Z","updated_at_min":"2026-01-01T00:00:00Z","updated_at_max":"2026-12-31T23:59:59Z","fields":"id,name,email,phone,identification,created_at,updated_at"}',
 		}),
 	},
 	customFieldResource({
@@ -390,9 +392,11 @@ export const commerceResources: NuvemShopResourceDefinition[] = [
 				listQueryDescription:
 					'Supported filters include since_id, status, channels, payment_status, shipping_status, created_at_min, created_at_max, updated_at_min, updated_at_max, total_min, total_max, customer_ids, q, app_id, payment_methods, payment_provider, aggregates, and fields. The API limits a query to 10,000 results, so use date ranges for large stores.',
 				listQueryExample:
-					'{"payment_status":"paid","created_at_min":"2026-07-01T00:00:00Z","aggregates":"fulfillment_orders","fields":"id,number,total,payment_status,updated_at"}',
+					'{"since_id":100,"status":"any","channels":"store","payment_status":"paid","shipping_status":"any","created_at_min":"2026-07-01T00:00:00Z","created_at_max":"2026-07-31T23:59:59Z","updated_at_min":"2026-07-01T00:00:00Z","updated_at_max":"2026-07-31T23:59:59Z","total_min":10,"total_max":1000,"customer_ids":"101,102","q":"Maria","app_id":1234,"payment_methods":"credit_card","payment_provider":"provider-id","aggregates":"fulfillment_orders","fields":"id,number,total,payment_status,shipping_status,status,customer,products,updated_at"}',
 				getQueryDescription:
 					'Optional fields and aggregates, such as aggregates=fulfillment_orders.',
+				getQueryExample:
+					'{"aggregates":"fulfillment_orders","fields":"id,number,total,payment_status,shipping_status,status,customer,products,updated_at"}',
 			}),
 			{
 				name: 'Cancel',

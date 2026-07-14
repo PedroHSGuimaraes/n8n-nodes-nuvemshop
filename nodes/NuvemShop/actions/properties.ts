@@ -24,14 +24,32 @@ function operationFields(
 		};
 		const loadOptionsMethod =
 			parameter.loadOptionsMethod ?? inferredLoadOptions[parameter.displayName];
+		const staticOptions: Record<string, INodePropertyOptions[]> = {
+			'/business_rules/integrations/{domain}:domain': [
+				{ name: 'Payments', value: 'payments' },
+				{ name: 'Shipping', value: 'shipping' },
+				{ name: 'Location', value: 'location' },
+				{ name: 'Cart', value: 'cart' },
+			],
+			'/metafields/{owner_resource}:owner_resource': [
+				{ name: 'Products', value: 'products' },
+				{ name: 'Product Variants', value: 'product_variants' },
+				{ name: 'Categories', value: 'categories' },
+				{ name: 'Pages', value: 'pages' },
+				{ name: 'Orders', value: 'orders' },
+				{ name: 'Customers', value: 'customers' },
+			],
+		};
+		const options = staticOptions[`${operation.path}:${parameter.name}`];
 		properties.push({
 			displayName: loadOptionsMethod
 				? parameter.displayName.replace(/ ID$/, ' Name or ID')
 				: parameter.displayName,
 			name: parameter.name,
-			type: loadOptionsMethod ? 'options' : 'string',
+			type: loadOptionsMethod || options ? 'options' : 'string',
 			typeOptions: loadOptionsMethod ? { loadOptionsMethod } : undefined,
-			default: '',
+			options,
+			default: options?.[0]?.value ?? '',
 			required: true,
 			placeholder: parameter.placeholder,
 			displayOptions,

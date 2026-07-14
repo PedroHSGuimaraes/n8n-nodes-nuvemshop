@@ -51,6 +51,7 @@ interface CrudOperationConfig {
 	listQueryDescription?: string;
 	listQueryExample?: string;
 	getQueryDescription?: string;
+	getQueryExample?: string;
 	scope?: NuvemShopRequestScope;
 	apiVersion?: '2025-03' | 'v1' | 'unstable';
 	canCreate?: boolean;
@@ -110,7 +111,10 @@ export function standardCrudOperations(
 			apiVersion,
 			pathParameters: [config.idParameter],
 			query: config.getQueryDescription
-				? jsonQuery(config.getQueryDescription, '{"fields":"id,name,updated_at"}')
+				? jsonQuery(
+						config.getQueryDescription,
+						config.getQueryExample ?? '{"fields":"id,name,updated_at"}',
+					)
 				: undefined,
 		});
 	}

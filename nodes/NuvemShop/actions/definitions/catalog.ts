@@ -166,7 +166,7 @@ const categoryOperations: NuvemShopOperationDefinition[] = [
 		paginated: true,
 		query: jsonQuery(
 			'Optional category filters: since_id, language, handle, parent_id, created_at_min, created_at_max, updated_at_min, updated_at_max, and fields. Dates use ISO 8601. The node manages page and per_page.',
-			'{"parent_id":4567,"language":"pt","handle":"camisetas","updated_at_min":"2026-01-01T00:00:00Z","fields":"id,name,parent,visibility,updated_at"}',
+			'{"since_id":100,"language":"pt","handle":"camisetas","parent_id":4567,"created_at_min":"2026-01-01T00:00:00Z","created_at_max":"2026-12-31T23:59:59Z","updated_at_min":"2026-01-01T00:00:00Z","updated_at_max":"2026-12-31T23:59:59Z","fields":"id,name,description,handle,parent,subcategories,visibility,updated_at"}',
 		),
 	},
 	{
@@ -256,7 +256,7 @@ const productOperations: NuvemShopOperationDefinition[] = [
 		paginated: true,
 		query: jsonQuery(
 			'Optional product filters: ids (up to 30 comma-separated IDs), since_id, language, q, handle, category_id, published, free_shipping, max_stock, min_stock, has_promotional_price, has_weight, has_all_dimensions, has_weight_and_all_dimensions, created_at_min/max, updated_at_min/max, sort_by, and fields. The node manages page and per_page.',
-			'{"q":"camiseta","category_id":4567,"published":true,"sort_by":"created-at-descending","fields":"id,name,variants,updated_at"}',
+			'{"ids":"1234,5678","since_id":100,"language":"pt","q":"camiseta","handle":"camiseta-basica","category_id":4567,"published":true,"free_shipping":false,"max_stock":100,"min_stock":1,"has_promotional_price":true,"has_weight":true,"has_all_dimensions":true,"has_weight_and_all_dimensions":true,"created_at_min":"2026-01-01T00:00:00Z","created_at_max":"2026-12-31T23:59:59Z","updated_at_min":"2026-01-01T00:00:00Z","updated_at_max":"2026-12-31T23:59:59Z","sort_by":"created-at-descending","fields":"id,name,description,handle,variants,images,categories,published,free_shipping,brand,tags,updated_at"}',
 		),
 	},
 	{
@@ -355,7 +355,7 @@ const productImageOperations: NuvemShopOperationDefinition[] = [
 		paginated: true,
 		query: jsonQuery(
 			'Optional image filters: since_id, src, position, and fields. The node manages page and per_page.',
-			'{"since_id":100,"position":1,"fields":"id,src,position,alt"}',
+			'{"since_id":100,"src":"https://example.com/image.webp","position":1,"fields":"id,product_id,src,position,alt,updated_at"}',
 		),
 	},
 	{
@@ -436,7 +436,7 @@ const productVariantOperations: NuvemShopOperationDefinition[] = [
 		paginated: true,
 		query: jsonQuery(
 			'Optional variant filters: since_id, created_at_min, created_at_max, updated_at_min, updated_at_max, and fields. Dates use ISO 8601. The node manages page and per_page.',
-			'{"since_id":100,"updated_at_min":"2026-01-01T00:00:00Z","fields":"id,values,sku,price,stock,updated_at"}',
+			'{"since_id":100,"created_at_min":"2026-01-01T00:00:00Z","created_at_max":"2026-12-31T23:59:59Z","updated_at_min":"2026-01-01T00:00:00Z","updated_at_max":"2026-12-31T23:59:59Z","fields":"id,product_id,values,sku,price,promotional_price,stock,stock_management,updated_at"}',
 		),
 	},
 	{
@@ -555,7 +555,7 @@ const metafieldOperations: NuvemShopOperationDefinition[] = [
 		paginated: true,
 		query: jsonQuery(
 			'Optional metafield filters: owner_id, namespace, key, created_at_min, created_at_max, updated_at_min, updated_at_max, and fields. Dates use ISO 8601. The node manages page and per_page.',
-			'{"owner_id":2856879,"namespace":"shipping_rules","key":"additional_days","fields":"id,key,value,owner_id,owner_resource"}',
+			'{"owner_id":2856879,"namespace":"shipping_rules","key":"additional_days","created_at_min":"2026-01-01T00:00:00Z","created_at_max":"2026-12-31T23:59:59Z","updated_at_min":"2026-01-01T00:00:00Z","updated_at_max":"2026-12-31T23:59:59Z","fields":"id,namespace,key,value,description,owner_id,owner_resource,created_at,updated_at"}',
 		),
 	},
 	{

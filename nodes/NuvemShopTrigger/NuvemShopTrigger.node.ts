@@ -12,6 +12,7 @@ import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workf
 
 import { nuvemShopApiCredentialTest } from '../NuvemShop/methods/credentialTest';
 import { nuvemShopApiRequest } from '../NuvemShop/transport';
+import { NUVEMSHOP_WEBHOOK_EVENTS } from '../shared/webhookEvents';
 
 /* eslint-disable @n8n/community-nodes/node-usable-as-tool -- Trigger nodes cannot be AI tools. */
 
@@ -23,52 +24,7 @@ interface RegisteredWebhook {
 
 const PORTAL_ONLY_EVENTS = new Set(['customers/data_request', 'customers/redact', 'store/redact']);
 
-const WEBHOOK_EVENTS = [
-	'app/resumed',
-	'app/suspended',
-	'app/uninstalled',
-	'category/created',
-	'category/deleted',
-	'category/updated',
-	'customer/created',
-	'customer/deleted',
-	'customer/updated',
-	'customers/data_request',
-	'customers/redact',
-	'domain/updated',
-	'fulfillment/updated',
-	'fulfillment_order/label_status_updated',
-	'fulfillment_order/status_updated',
-	'fulfillment_order/tracking_event_created',
-	'fulfillment_order/tracking_event_deleted',
-	'fulfillment_order/tracking_event_updated',
-	'location/created',
-	'location/deleted',
-	'location/updated',
-	'order/cancelled',
-	'order/created',
-	'order/custom_fields_updated',
-	'order/edited',
-	'order/fulfilled',
-	'order/packed',
-	'order/paid',
-	'order/pending',
-	'order/unpacked',
-	'order/updated',
-	'order/voided',
-	'order_custom_field/created',
-	'order_custom_field/deleted',
-	'order_custom_field/updated',
-	'product/created',
-	'product/deleted',
-	'product/updated',
-	'product_variant/custom_fields_updated',
-	'product_variant_custom_field/created',
-	'product_variant_custom_field/deleted',
-	'product_variant_custom_field/updated',
-	'store/redact',
-	'subscription/updated',
-].map((event) => ({
+const WEBHOOK_EVENTS = NUVEMSHOP_WEBHOOK_EVENTS.map((event) => ({
 	name: event
 		.replaceAll('/', '_')
 		.split('_')

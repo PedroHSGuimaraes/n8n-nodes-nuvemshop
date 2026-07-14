@@ -365,7 +365,7 @@ const webhookOperations: NuvemShopOperationDefinition[] = [
 		paginated: true,
 		query: jsonQuery(
 			'Optional filters: since_id, url, event, created_at_min, created_at_max, updated_at_min, updated_at_max, and fields. Dates use ISO 8601. The node manages page and per_page.',
-			'{"event":"order/paid","updated_at_min":"2026-01-01T00:00:00Z","fields":"id,event,url,updated_at"}',
+			'{"since_id":100,"url":"https://automation.example.com/webhook","event":"order/paid","created_at_min":"2026-01-01T00:00:00Z","created_at_max":"2026-12-31T23:59:59Z","updated_at_min":"2026-01-01T00:00:00Z","updated_at_max":"2026-12-31T23:59:59Z","fields":"id,event,url,created_at,updated_at"}',
 		),
 	},
 	{

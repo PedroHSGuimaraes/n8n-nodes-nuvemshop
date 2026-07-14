@@ -247,7 +247,58 @@ describe('Nuvem Shop guided UX and AI tool schema', () => {
 			({ name }) => name === 'bodyFields',
 		);
 		const orderPayment = orderFields.options.find(({ name }) => name === 'paymentStatus');
-		assert.equal(orderPayment.type, 'string');
+		assert.equal(orderPayment.type, 'options');
+		assert.deepEqual(orderPayment.options.map(({ value }) => value).sort(), [
+			'authorized',
+			'paid',
+			'pending',
+		]);
+	});
+
+	it('uses easy selectors for finite values and comma-separated lists', () => {
+		const orderFilters = activeProperties('order', 'getMany').find(
+			({ name }) => name === 'filters',
+		);
+		const aggregates = orderFilters.options.find(({ name }) => name === 'aggregates');
+		const fields = orderFilters.options.find(({ name }) => name === 'fields');
+
+		assert.equal(aggregates.type, 'multiOptions');
+		assert.deepEqual(aggregates.options.map(({ value }) => value).sort(), [
+			'custom_fields',
+			'fulfillment_orders',
+		]);
+		assert.equal(fields.type, 'multiOptions');
+
+		const productFields = activeProperties('product', 'create').find(
+			({ name }) => name === 'bodyFields',
+		);
+		const categories = productFields.options.find(({ name }) => name === 'categories');
+		assert.equal(categories.type, 'multiOptions');
+		assert.equal(categories.typeOptions.loadOptionsMethod, 'getCategories');
+
+		const locationFields = activeProperties('location', 'create').find(
+			({ name }) => name === 'bodyFields',
+		);
+		assert.equal(locationFields.options.find(({ name }) => name === 'tags').type, 'multiOptions');
+	});
+
+	it('uses selectors for finite path values', () => {
+		const domain = activeProperties('businessRule', 'setIntegrationCallback').find(
+			({ name }) => name === 'domain',
+		);
+		assert.equal(domain.type, 'options');
+		assert.deepEqual(domain.options.map(({ value }) => value).sort(), [
+			'cart',
+			'location',
+			'payments',
+			'shipping',
+		]);
+
+		const owner = activeProperties('metafield', 'getMany').find(
+			({ name }) => name === 'owner_resource',
+		);
+		assert.equal(owner.type, 'options');
+		assert.equal(owner.options.length, 6);
 	});
 
 	it('offers guided fields for every object-shaped body and query example', () => {
