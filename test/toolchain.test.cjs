@@ -102,7 +102,10 @@ describe('S1 toolchain do node-cli', () => {
 			runs.some((line) => /\bnpm (publish|run release)\b/.test(line)),
 			false,
 		);
-		assert.match(publish, /RELEASE_MODE: 'true'/);
+		// O passo de stage leva RELEASE_MODE e o token; o job tem permissão de id-token para o provenance.
+		const stage = publish.slice(publish.indexOf('Stage package for approval'));
+		assert.match(stage, /RELEASE_MODE: 'true'/);
+		assert.match(publish, /id-token: write/);
 		assert.match(publish, /NODE_AUTH_TOKEN: \$\{\{ secrets\.NPM_TOKEN \}\}/);
 		assert.match(publish, /workflow_dispatch:/);
 		assert.match(publish, /tags:\s*\n\s*- 'v\*\.\*\.\*'/);

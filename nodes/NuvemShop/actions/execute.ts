@@ -7,7 +7,7 @@ import type {
 import { NodeOperationError } from 'n8n-workflow';
 
 import { parseJsonBody, parseJsonObject } from '../helpers/json';
-import { emptyLocatorError, getIdParameter, ID_KINDS } from '../helpers/resourceLocator';
+import { emptyLocatorError, getIdParameter, idKindFor } from '../helpers/resourceLocator';
 import { buildMultipartForm } from '../helpers/multipart';
 import { nuvemShopApiRequest, nuvemShopApiRequestAllItems } from '../transport';
 import { guidedValues, validateRequiredBody } from './guidedInputs';
@@ -26,7 +26,7 @@ function resolvePath(
 			const displayName = operation.pathParameters?.find(
 				(parameter) => parameter.name === parameterName,
 			)?.displayName;
-			const kind = displayName ? ID_KINDS[displayName] : undefined;
+			const kind = idKindFor(displayName);
 			if (kind && Number(context.getNode().typeVersion) >= 2) {
 				throw emptyLocatorError(context, kind, itemIndex);
 			}

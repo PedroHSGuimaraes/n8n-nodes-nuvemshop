@@ -83,6 +83,15 @@ describe('S4 datas dos filtros', () => {
 		assert.ok(fields >= 24, `poucos campos de data: ${fields}`);
 		const coupons = dateKeys(findOperation('coupon', 'getMany'));
 		for (const key of COUPON_DATES) assert.ok(coupons.includes(key), key);
+		// Lista fixa (não derivada da mesma regex do código): as 8 chaves que o plano promete.
+		const [products] = forOperation('product', 'getMany', 2, 'filters');
+		const [couponFilters] = forOperation('coupon', 'getMany', 2, 'filters');
+		const typeOf = (collection, key) =>
+			collection.options.find((option) => option.name === camel(key))?.type;
+		for (const key of ['created_at_min', 'created_at_max', 'updated_at_min', 'updated_at_max']) {
+			assert.equal(typeOf(products, key), 'dateTime', `produto ${key}`);
+		}
+		for (const key of COUPON_DATES) assert.equal(typeOf(couponFilters, key), 'dateTime', key);
 	});
 
 	it('v2: data sem fuso segue como veio', async () => {
@@ -161,6 +170,79 @@ describe('S4 datas dos filtros', () => {
 			},
 		);
 		assert.equal(called, false, 'nenhuma requisição deve sair com data inválida');
+	});
+});
+
+describe('S4 achados do Verifier', () => {
+	// Datas que a regex aceita mas o calendário não tem: a API receberia um dia que não existe.
+	it('v2: data impossível lança NodeOperationError sem chamar a API', async () => {
+		for (const bad of ['2026-02-30', '2026-04-31', '2026-07-01T24:00:00']) {
+			let called = false;
+			await assert.rejects(
+				executeDefinedOperation.call(
+					executeContext(
+						2,
+						{ filters: { createdAtMin: bad }, returnAll: false, limit: 5 },
+						async () => {
+							called = true;
+							return [];
+						},
+					),
+					findOperation('product', 'getMany'),
+					0,
+				),
+				(error) => error.name === 'NodeOperationError',
+				bad,
+			);
+			assert.equal(called, false, bad);
+		}
+		// Data real continua valendo, inclusive 29 de fevereiro de ano bissexto.
+		let request;
+		await executeDefinedOperation.call(
+			executeContext(
+				2,
+				{ filters: { createdAtMin: '2028-02-29' }, returnAll: false, limit: 5 },
+				async (options) => {
+					request = options;
+					return [];
+				},
+			),
+			findOperation('product', 'getMany'),
+			0,
+		);
+		assert.equal(request.qs.created_at_min, '2028-02-29');
+	});
+
+	// Linha vazia no meio deslocaria os atributos seguintes (Azul viraria o 2º atributo).
+	it('v2: linha de Values sem texto lança NodeOperationError', async () => {
+		for (const text of ['', '   ']) {
+			let called = false;
+			await assert.rejects(
+				executeDefinedOperation.call(
+					executeContext(
+						2,
+						{
+							product_id: { mode: 'list', value: '123' },
+							variantValues: {
+								values: [
+									{ language: 'pt', text: 'G' },
+									{ language: 'pt', text },
+									{ language: 'pt', text: 'Azul' },
+								],
+							},
+						},
+						async () => {
+							called = true;
+							return {};
+						},
+					),
+					findOperation('productVariant', 'create'),
+					0,
+				),
+				(error) => error.name === 'NodeOperationError',
+			);
+			assert.equal(called, false);
+		}
 	});
 });
 

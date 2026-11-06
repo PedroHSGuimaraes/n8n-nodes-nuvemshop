@@ -4,7 +4,7 @@ Build: `npm run build --silent`; `npx tsc --noEmit`
 Run unit: `npm run build --silent && node --test --test-reporter=spec test/*.test.cjs`
 Plan: `.specs/features/node-cli-campos-v2/plan.md`
 
-32 checks in 5 slices · 4 one-way doors · 0 open, of which 0 block
+34 checks in 5 slices · 4 one-way doors · 0 open, of which 0 block
 
 ## Checks
 
@@ -111,6 +111,12 @@ Proof: run unit | ✔ v2: Values de variante é fixedCollection
 **C30** - Na v2, duas linhas pt viram values [{"pt":"Tamanho G"},{"pt":"Azul"}] (AC 7)
 Proof: run unit | ✔ v2: Values de variante vira array de objetos por idioma
 
+**C33** - Na v2, data que não existe no calendário (2026-02-30, 2026-04-31, hora 24) lança NodeOperationError sem chamar a API; 2028-02-29 passa (AC S4.8)
+Proof: run unit | ✔ v2: data impossível lança NodeOperationError sem chamar a API
+
+**C34** - Na v2, linha de Values sem texto ou só com espaços lança NodeOperationError sem chamar a API (AC S4.9)
+Proof: run unit | ✔ v2: linha de Values sem texto lança NodeOperationError
+
 ### S5 - documentação e lançamento 1.2.0
 
 **C31** - O README tem as seções do padrão do RD Station CRM (AC 1)
@@ -127,7 +133,7 @@ Proof: run unit | ✔ versão 1.2.0 e CHANGELOG com a seção 1.2.0
 | listSearch por recurso (5) | produtos C18 · categorias C20 · pedidos C17 · clientes C18 · cupons C21 | - |
 | paginationToken (3 exemplos) | 50 itens C19 · 49 itens C19 · 0 itens C19 | - |
 | datas dateTime (8) | created_at_min C24 · created_at_max C24 · updated_at_min C24 · updated_at_max C24 · min_start_date C24 C27 · min_end_date C24 · max_start_date C24 · max_end_date C24 | - |
-| exemplos de data (3) | sem fuso C25 · com fuso C26 · inválida C28 | - |
+| exemplos de data (4) | sem fuso C25 · com fuso C26 · inválida C28 · inexistente C33 | - |
 | statuses do node v2 (3) | 200 C14 · 401 C23 · 4xx e 5xx C5 | - |
 | statuses do node v1 (2) | 200 C9 · 4xx e 5xx C5 | - |
 | statuses do listSearch (2) | 200 C17 · 401 C23 | - |
@@ -148,7 +154,7 @@ Proof: run unit | ✔ versão 1.2.0 e CHANGELOG com a seção 1.2.0
 ## Handoff
 
 - **Settled mid-build:** none
-- **Dispatched:** none
+- **Dispatched:** Verifier (sonnet) em eb0d23a, enviado
 - **Boundary:** C1-C30 fechados em bbf30da; C31-C32 neste commit
 - **Abandoned:** none
 - **Pós-merge (fora desta entrega):** a tag `v1.2.0`, a aprovação 2FA do dono na aba Staged Packages e o `npm view n8n-nodes-nuvemshop version` devolver 1.2.0 dependem do dono (AC S5.3); C7 prova o workflow

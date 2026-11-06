@@ -15,11 +15,11 @@ Quando isso sair: o lint oficial passa sem erro, o node novo mostra nos 5 campos
 
 ## Shape
 
-Reutiliza `nuvemShopApiRequest` (transporte), os rótulos de `toOptions` de `loadOptions.ts` e a tabela de definições de operação; os modos de lista do Resource Locator chamam as mesmas rotas de listagem. A regra que muda o resultado, ler o ID do campo (texto na versão 1, objeto `{ mode, value }` na versão 2), fica numa função única `getIdParameter`, chamada por `resolvePath` e por `loadOptions.getProductVariants`, que os testes alcançam pelo `execute` do node.
+Reutiliza `nuvemShopApiRequest` (transporte), os rótulos de `toOptions` de `loadOptions.ts` e a tabela de definições de operação; os modos de lista do Resource Locator chamam as mesmas rotas de listagem. A regra que muda o resultado, ler o ID do campo (texto na versão 1, objeto `{ mode, value }` na versão 2), fica numa função única `getIdParameter`, chamada por `resolvePath`, e `readIdValue` (a mesma leitura, sem o contexto do item) por `loadOptions.getProductVariants`, que os testes alcançam pelo `execute` do node.
 
 1. entra o item do workflow -> `NuvemShop.execute` (exists) - lê `resource` e `operation` e chama `executeDefinedOperation`
 2. `executeDefinedOperation` (exists) - monta rota, filtros e corpo da operação
-3. `getIdParameter` (new) - na versão 1 devolve o texto do parâmetro; na versão 2 devolve o `value` do Resource Locator, sem espaço nas pontas; nos dois casos devolve texto, ou lança erro se vazio
+3. `getIdParameter` (new) - na versão 1 devolve o texto do parâmetro; na versão 2 devolve o `value` do Resource Locator, sem espaço nas pontas; nos dois casos devolve texto (vazio quando não preenchido) e quem monta a rota (`resolvePath`) lança o erro
 4. `formatDateFilter` (new) - na versão 2 valida que a data é ISO 8601 e a envia como veio; nas 4 datas de cupom corta para `YYYY-MM-DD`; na versão 1 não toca no texto
 5. `nuvemShopApiRequest` (exists) - monta a requisição com `timeout` de 30 s e chama `httpRequestWithAuthentication`
 6. out: a resposta da Nuvemshop como itens do n8n, igual à 1.1.3
@@ -120,10 +120,11 @@ Na versão 2, produto, categoria, pedido, cliente e cupom são Resource Locator 
 6. WHEN o editor pede a lista de produtos ou de clientes com busca `camiseta` THEN o `listSearch` SHALL chamar `GET /products?q=camiseta` ou `GET /customers?q=camiseta` com `page` e `per_page` 50, e nunca baixar mais de uma página por chamada
 7. WHEN o `listSearch` recebe a página 1 com 50 itens THEN o resultado SHALL trazer `paginationToken` `"2"`; WHEN recebe menos de 50 itens THEN o resultado SHALL vir sem `paginationToken`
    - 50 itens → token "2"; 49 itens → sem token; 0 itens → `{ results: [] }`
-8. WHEN o editor pede a lista de categorias com busca `camis` THEN o `listSearch` SHALL buscar páginas de 200 em `GET /categories` sem `q` (a rota não tem busca), filtrar o nome por "contém", sem diferenciar acento nem caixa, e parar com 20 resultados ou após 5 páginas, devolvendo o `paginationToken` da próxima página se ela existir
+8. WHEN o editor pede a lista de categorias com busca `camis` THEN o `listSearch` SHALL buscar páginas de 200 em `GET /categories` sem `q` (a rota não tem busca), filtrar o nome por "contém", sem diferenciar acento nem caixa, e parar ao fim da página em que chega a 20 resultados (devolvendo todos os acertos dessa página) ou após 5 páginas, devolvendo o `paginationToken` da próxima página se ela existir
 9. WHEN o editor pede a lista de cupons com busca `WELCOME` THEN o `listSearch` SHALL chamar `GET /coupons?q=WELCOME` e, no que voltar, manter só os cupons cujo `code` contém o texto
 10. WHEN `loadOptions.getProductVariants` roda na versão 2 com `product_id` `{ mode: 'list', value: '123' }` THEN o sistema SHALL chamar GET na rota /products/123/variants
 11. WHEN o `listSearch` recebe `401` da API THEN o sistema SHALL lançar `NodeApiError` com o código HTTP 401
+12. The node SHALL tratar como Resource Locator também as operações cujo dono de campo personalizado escreve o nome do parâmetro em minúscula (`category ID`, `product ID`), em /categories/{id}/custom-fields e /products/{id}/custom-fields e nas rotas /values dessas duas
 
 ### S4: datas e variantes guiadas (P2)
 
@@ -138,6 +139,9 @@ Na versão 2, as datas dos filtros são seletor de data e o `Values` da variante
 5. IF a data chega em formato que não é ISO 8601 THEN o sistema SHALL lançar `NodeOperationError` com a descrição `Pick a date from the calendar or use the format 2026-07-01T00:00:00Z`
 6. The node SHALL expor, para `@version` 2, o `Values` de criação e atualização de variante como `fixedCollection` com linhas de `Language` (`pt`, `pt_BR`, `es`, `es_AR`, `en`) e `Text`
 7. WHEN o `execute` roda com `typeVersion` 2 em `productVariant`/`create` e duas linhas `{ language: 'pt', text: 'Tamanho G' }` e `{ language: 'pt', text: 'Azul' }` THEN o sistema SHALL enviar `"values": [{"pt":"Tamanho G"},{"pt":"Azul"}]`
+8. IF a data tem formato ISO 8601 mas não existe no calendário (`2026-02-30`, `2026-04-31`, hora `24:00:00`) THEN o sistema SHALL lançar `NodeOperationError` sem chamar a API
+   - `2028-02-29` → aceita; `2026-02-30` → recusa
+9. IF uma linha de Values chega sem texto ou só com espaços THEN o sistema SHALL lançar `NodeOperationError` sem chamar a API, porque pular a linha deslocaria os atributos seguintes
 
 ### S5: documentação e lançamento 1.2.0 (P2)
 
@@ -168,6 +172,7 @@ A versão nova chega ao npm, esperando a aprovação do dono.
 | `GET /categories` não tem `q` | O `listSearch` filtra no node, páginas de 200, até 5 páginas por chamada | A doc lista só `handle` (com `language`) e `parent_id` | n |
 | Fuso do seletor de data sem offset | Envia o texto como veio, sem fuso (AD-011, Jev 0,57) | O node não tem o fuso do workflow sem dependência de runtime | n |
 | Formato das datas de cupom (`min_start_date`) | `YYYY-MM-DD` | O exemplo da doc dos cupons mostra `start_date` sem hora | n |
+| `paginationToken` que não é número inteiro positivo (`abc`, `0`, `-3`) | Lê a página 1, sem erro | O token vem do próprio editor; um valor estranho só reinicia a lista | n |
 | Tamanho da página do `listSearch` | 50 itens (200 em categorias) | A API aceita até 200 por página e 30 por padrão; 50 equilibra rapidez e rolagem | n |
 | `timeout` de 30 s | 30000 ms em toda requisição | 30 s deixa folga para multipart e binário; valor escolhido sem medição | n |
 | Mensagens e rótulos do node | Continuam em inglês, como hoje e como o resto do n8n | A UX guideline do n8n escreve em inglês | n |

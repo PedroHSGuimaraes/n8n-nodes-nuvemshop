@@ -132,10 +132,15 @@ describe('S3 IDs principais com lista pesquisável', () => {
 	it('v2: IDs principais são resourceLocator com list pesquisável e id', () => {
 		const seen = new Set();
 		let checked = 0;
+		let lowercase = 0;
 		for (const resource of resourceDefinitions) {
 			for (const operation of resource.operations) {
 				for (const parameter of operation.pathParameters ?? []) {
-					const method = ID_KINDS[parameter.displayName];
+					// Alguns donos de campo personalizado escrevem o nome em minúscula ('category ID').
+					const method =
+						ID_KINDS[
+							parameter.displayName.charAt(0).toUpperCase() + parameter.displayName.slice(1)
+						];
 					if (!method) continue;
 					const property = v2Properties.find(
 						(candidate) =>
@@ -154,12 +159,15 @@ describe('S3 IDs principais com lista pesquisável', () => {
 					assert.equal(property.modes[0].typeOptions.searchable, true, label);
 					assert.equal(property.modes[0].typeOptions.searchListMethod, method, label);
 					assert.equal(property.default.mode, 'list', label);
-					seen.add(parameter.displayName);
+					seen.add(parameter.displayName.charAt(0).toUpperCase() + parameter.displayName.slice(1));
+					if (parameter.displayName.charAt(0) === parameter.displayName.charAt(0).toLowerCase())
+						lowercase += 1;
 					checked += 1;
 				}
 			}
 		}
 		assert.deepEqual([...seen].sort(), Object.keys(ID_KINDS).sort());
+		assert.ok(lowercase >= 4, `operações com nome em minúscula não conferidas: ${lowercase}`);
 		assert.ok(checked > 40, `poucas operações conferidas: ${checked}`);
 	});
 
@@ -190,21 +198,34 @@ describe('S3 IDs principais com lista pesquisável', () => {
 	});
 
 	// O sufixo " [item 0]" é acrescentado pela tela do n8n a partir do itemIndex; o erro leva o índice.
+	// O sufixo " [item 0]" é acrescentado pela tela do n8n a partir do itemIndex; o erro leva o índice.
 	it('v2: Resource Locator vazio lança NodeOperationError com descrição', async () => {
-		await assert.rejects(
-			executeDefinedOperation.call(
-				executeContext(2, { orderId: { mode: 'list', value: '' } }),
-				findOperation('order', 'get'),
-				0,
-			),
-			(error) => {
-				assert.equal(error.name, 'NodeOperationError');
-				assert.equal(error.message, "The 'Order' parameter is empty");
-				assert.equal(error.description, 'Choose an order from the list or paste its ID');
-				assert.equal(error.context.itemIndex, 0);
-				return true;
-			},
-		);
+		// Os cinco tipos de ID, cada um com o rótulo e a frase do plano.
+		const kinds = [
+			['product', 'Product', 'a product'],
+			['category', 'Category', 'a category'],
+			['order', 'Order', 'an order'],
+			['customer', 'Customer', 'a customer'],
+			['coupon', 'Coupon', 'a coupon'],
+		];
+		for (const [resource, label, article] of kinds) {
+			const operation = findOperation(resource, 'get');
+			const parameter = operation.pathParameters[0].name;
+			await assert.rejects(
+				executeDefinedOperation.call(
+					executeContext(2, { [parameter]: { mode: 'list', value: '' } }),
+					operation,
+					0,
+				),
+				(error) => {
+					assert.equal(error.name, 'NodeOperationError', resource);
+					assert.equal(error.message, `The '${label}' parameter is empty`, resource);
+					assert.equal(error.description, `Choose ${article} from the list or paste its ID`);
+					assert.equal(error.context.itemIndex, 0);
+					return true;
+				},
+			);
+		}
 	});
 
 	it('v2: getProductVariants lê o product_id do Resource Locator', async () => {

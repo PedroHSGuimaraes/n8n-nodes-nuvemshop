@@ -1,6 +1,6 @@
 import type { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 
-import { ID_KINDS } from '../helpers/resourceLocator';
+import { idKindFor } from '../helpers/resourceLocator';
 import {
 	guidedBodyProperties,
 	guidedQueryProperties,
@@ -78,7 +78,7 @@ function operationFields(
 
 		// Os cinco IDs principais viram Resource Locator na versão 2, com o mesmo `name` da versão 1
 		// (AD-002 e AD-009). A versão 1 guarda a propriedade antiga, só restrita a `@version` 1.
-		const kind = ID_KINDS[parameter.displayName];
+		const kind = idKindFor(parameter.displayName);
 		if (!kind) {
 			properties.push(legacyProperty);
 			continue;

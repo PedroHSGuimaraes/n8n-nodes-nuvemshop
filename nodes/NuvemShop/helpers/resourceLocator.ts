@@ -33,6 +33,16 @@ export const ID_KINDS: Record<string, IdKind> = {
 };
 
 /**
+ * Acha o tipo de ID pelo nome de exibição do parâmetro. Os donos de campo personalizado
+ * (categoria e produto) escrevem o nome em minúscula ("category ID"), por isso a primeira
+ * letra é maiúscula antes da busca na tabela.
+ */
+export function idKindFor(displayName: string | undefined): IdKind | undefined {
+	if (!displayName) return undefined;
+	return ID_KINDS[displayName.charAt(0).toUpperCase() + displayName.slice(1)];
+}
+
+/**
  * Devolve o ID em texto, sem espaço nas pontas, venha ele como texto, número ou Resource Locator.
  * O Resource Locator manda o ID em `value`, nos dois modos (`list` e `id`).
  */

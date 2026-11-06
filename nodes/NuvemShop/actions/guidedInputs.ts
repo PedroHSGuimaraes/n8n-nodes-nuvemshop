@@ -474,6 +474,19 @@ function isDateField(apiName: string): boolean {
 // ISO 8601 aceito: data sozinha, ou data e hora com segundos, fração e fuso opcionais.
 const ISO_8601 = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})?)?$/;
 
+// Confere o formato ISO 8601 e também o calendário: "2026-02-30" e hora 24 passam na regex,
+// mas não existem. O dia volta pelo UTC e precisa ser o mesmo que veio no texto.
+function isRealIsoDate(text: string): boolean {
+	if (!ISO_8601.test(text)) return false;
+	const [year, month, day] = text.slice(0, 10).split('-').map(Number);
+	const date = new Date(Date.UTC(year, month - 1, day));
+	const sameDay =
+		date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+	const hour = text.length > 10 ? Number(text.slice(11, 13)) : 0;
+	const minute = text.length > 10 ? Number(text.slice(14, 16)) : 0;
+	return sameDay && hour <= 23 && minute <= 59;
+}
+
 // Rotas de variante com corpo objeto: criar (POST) e atualizar (PUT) uma variante.
 // O PUT/PATCH em lote recebe array e continua com o JSON.
 export function hasVariantValues(operation: NuvemShopOperationDefinition): boolean {
@@ -720,7 +733,7 @@ function dateApiValue(
 	itemIndex: number,
 ): string {
 	const text = String(value).trim();
-	if (!ISO_8601.test(text) || Number.isNaN(Date.parse(text))) {
+	if (!isRealIsoDate(text)) {
 		throw new NodeOperationError(
 			context.getNode(),
 			`The "${field.property.displayName}" filter is not a valid date`,
@@ -819,9 +832,17 @@ export function guidedValues(
 	if (source === 'body' && version >= 2 && hasVariantValues(operation)) {
 		const rows = (context.getNodeParameter('variantValues', itemIndex, {}) as IDataObject)
 			.values as IDataObject[] | undefined;
-		const variantValues = (rows ?? [])
-			.filter((row) => String(row.text ?? '') !== '')
-			.map((row) => ({ [String(row.language ?? 'pt')]: String(row.text) }));
+		// Linha sem texto deslocaria os atributos seguintes (o 3º viraria o 2º): recusa em vez de pular.
+		if ((rows ?? []).some((row) => String(row.text ?? '').trim() === '')) {
+			throw new NodeOperationError(context.getNode(), 'A Values row has no text', {
+				itemIndex,
+				description:
+					'Fill the Text of every Values row or remove the empty row, so the attributes keep their order',
+			});
+		}
+		const variantValues = (rows ?? []).map((row) => ({
+			[String(row.language ?? 'pt')]: String(row.text).trim(),
+		}));
 		if (variantValues.length) values.values = variantValues;
 	}
 

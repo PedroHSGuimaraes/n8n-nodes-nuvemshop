@@ -46,6 +46,7 @@ describe('S3 listSearch', () => {
 		assert.equal(request.qs.q, 'maria');
 		assert.equal(request.qs.page, 1);
 		assert.equal(request.qs.per_page, 50);
+		assert.equal(request.qs.fields, 'id,number,contact_name');
 		assert.deepEqual(result, {
 			results: [
 				{ name: '#100 — Maria Silva', value: '11' },
@@ -107,6 +108,8 @@ describe('S3 listSearch', () => {
 		const found = await listSearch.searchCategories.call(stops, 'camise');
 		assert.equal(stops.requests.length, 2);
 		assert.equal(found.results.length, 20);
+		// Parou na página 2 (cheia), então a próxima chamada recomeça na página 3.
+		assert.equal(found.paginationToken, '3');
 		assert.equal(stops.requests[0].qs.q, undefined, 'a rota de categorias não tem q');
 		assert.equal(stops.requests[0].qs.per_page, 200);
 		assert.deepEqual(found.results[0], { name: 'Camisêtas 201 — 201', value: '201' });
@@ -132,13 +135,22 @@ describe('S3 listSearch', () => {
 	});
 
 	it('listSearch repassa 401 como NodeApiError', async () => {
-		const context = editorContext(() => {
-			throw Object.assign(new Error('Unauthorized'), { httpCode: '401' });
-		});
-		await assert.rejects(listSearch.searchOrders.call(context, 'x'), (error) => {
-			assert.equal(error.name, 'NodeApiError');
-			assert.equal(error.httpCode, '401');
-			return true;
-		});
+		// Os cinco buscadores usam o mesmo transporte; todos precisam repassar o 401.
+		for (const method of [
+			'searchProducts',
+			'searchCategories',
+			'searchOrders',
+			'searchCustomers',
+			'searchCoupons',
+		]) {
+			const context = editorContext(() => {
+				throw Object.assign(new Error('Unauthorized'), { httpCode: '401' });
+			});
+			await assert.rejects(listSearch[method].call(context, 'x'), (error) => {
+				assert.equal(error.name, 'NodeApiError', method);
+				assert.equal(error.httpCode, '401', method);
+				return true;
+			});
+		}
 	});
 });
