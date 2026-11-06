@@ -139,7 +139,7 @@ Na versão 2, as datas dos filtros são seletor de data e o `Values` da variante
 5. IF a data chega em formato que não é ISO 8601 THEN o sistema SHALL lançar `NodeOperationError` com a descrição `Pick a date from the calendar or use the format 2026-07-01T00:00:00Z`
 6. The node SHALL expor, para `@version` 2, o `Values` de criação e atualização de variante como `fixedCollection` com linhas de `Language` (`pt`, `pt_BR`, `es`, `es_AR`, `en`) e `Text`
 7. WHEN o `execute` roda com `typeVersion` 2 em `productVariant`/`create` e duas linhas `{ language: 'pt', text: 'Tamanho G' }` e `{ language: 'pt', text: 'Azul' }` THEN o sistema SHALL enviar `"values": [{"pt":"Tamanho G"},{"pt":"Azul"}]`
-8. IF a data tem formato ISO 8601 mas não existe no calendário (`2026-02-30`, `2026-04-31`, hora `24:00:00`) THEN o sistema SHALL lançar `NodeOperationError` sem chamar a API
+8. IF a data tem formato ISO 8601 mas não existe no calendário (`2026-02-30`, `2026-04-31`, hora `24:00:00`, minuto ou segundo acima de 59, fuso `+99:99`) THEN o sistema SHALL lançar `NodeOperationError` sem chamar a API
    - `2028-02-29` → aceita; `2026-02-30` → recusa
 9. IF uma linha de Values chega sem texto ou só com espaços THEN o sistema SHALL lançar `NodeOperationError` sem chamar a API, porque pular a linha deslocaria os atributos seguintes
 

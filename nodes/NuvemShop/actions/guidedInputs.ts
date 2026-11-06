@@ -482,9 +482,14 @@ function isRealIsoDate(text: string): boolean {
 	const date = new Date(Date.UTC(year, month - 1, day));
 	const sameDay =
 		date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
-	const hour = text.length > 10 ? Number(text.slice(11, 13)) : 0;
-	const minute = text.length > 10 ? Number(text.slice(14, 16)) : 0;
-	return sameDay && hour <= 23 && minute <= 59;
+	// Hora, minuto e segundo precisam estar na faixa do relógio; segundo 60 (salto) também recusa.
+	const clock = text.length > 10 ? text.slice(11).match(/^(\d{2}):(\d{2})(?::(\d{2}))?/) : null;
+	const clockOk =
+		!clock || (Number(clock[1]) <= 23 && Number(clock[2]) <= 59 && Number(clock[3] ?? 0) <= 59);
+	// O fuso "+HH:MM" segue a mesma regra: hora até 23 e minuto até 59.
+	const zone = text.match(/[+-](\d{2}):(\d{2})$/);
+	const zoneOk = !zone || (Number(zone[1]) <= 23 && Number(zone[2]) <= 59);
+	return sameDay && clockOk && zoneOk;
 }
 
 // Rotas de variante com corpo objeto: criar (POST) e atualizar (PUT) uma variante.

@@ -176,7 +176,17 @@ describe('S4 datas dos filtros', () => {
 describe('S4 achados do Verifier', () => {
 	// Datas que a regex aceita mas o calendário não tem: a API receberia um dia que não existe.
 	it('v2: data impossível lança NodeOperationError sem chamar a API', async () => {
-		for (const bad of ['2026-02-30', '2026-04-31', '2026-07-01T24:00:00']) {
+		for (const bad of [
+			'2026-02-30',
+			'2026-04-31',
+			'2026-07-01T24:00:00',
+			// Minuto, segundo e fuso fora da faixa (achado do Verifier).
+			'2026-06-30T23:60:00',
+			'2026-06-30T23:59:60',
+			'2026-06-30T23:59:99',
+			'2026-06-30T10:00:00+99:99',
+			'2026-06-30T10:00:00+05:60',
+		]) {
 			let called = false;
 			await assert.rejects(
 				executeDefinedOperation.call(
