@@ -439,9 +439,11 @@ export const platformResources: NuvemShopResourceDefinition[] = [
 				value: 'getMany',
 				action: 'Get many checkout payment options',
 				description:
-					'Retrieve payment providers activated by the merchant and each checkout_payment_options entry, including exact option ID, display name, supported payment-method types, integration type, and logo. This endpoint is read-only and returns one array without documented pagination. Use IDs from this response instead of guessing from provider names.',
+					'Retrieve payment providers activated by the merchant and each checkout_payment_options entry, including exact option ID, display name, supported payment-method types, integration type, and logo. This endpoint is read-only, requires the read_payments scope, and returns one array without documented pagination. Use IDs from this response instead of guessing from provider names.',
 				method: 'GET',
-				path: '/payment-options',
+				// A doc 2025-03 só descreve GET /payment_providers/options; a rota antiga /payment-options
+				// não existe em nenhuma página oficial e devolvia 404 (auditoria de 06/11/2026).
+				path: '/payment_providers/options',
 			},
 		],
 	},

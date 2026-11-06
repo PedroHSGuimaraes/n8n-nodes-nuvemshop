@@ -1,0 +1,5512 @@
+[
+ {
+  "name": "resource",
+  "type": "options",
+  "show": null
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "abandonedCheckout"
+   ]
+  }
+ },
+ {
+  "name": "cartId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "abandonedCheckout"
+   ],
+   "operation": [
+    "applyCoupon"
+   ]
+  }
+ },
+ {
+  "name": "couponId",
+  "type": "options",
+  "show": {
+   "resource": [
+    "abandonedCheckout"
+   ],
+   "operation": [
+    "applyCoupon"
+   ]
+  }
+ },
+ {
+  "name": "checkoutId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "abandonedCheckout"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "abandonedCheckout"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "abandonedCheckout"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "abandonedCheckout"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "abandonedCheckout"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "authorization"
+   ]
+  }
+ },
+ {
+  "name": "authorizationCode",
+  "type": "string",
+  "show": {
+   "resource": [
+    "authorization"
+   ],
+   "operation": [
+    "exchangeAuthorizationCode"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "billing"
+   ]
+  }
+ },
+ {
+  "name": "serviceId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "createCharge"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "createCharge"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "createCharge"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "createPlan"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "createPlan"
+   ]
+  }
+ },
+ {
+  "name": "planId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "deletePlan"
+   ]
+  }
+ },
+ {
+  "name": "conceptCode",
+  "type": "string",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "getSubscription"
+   ]
+  }
+ },
+ {
+  "name": "serviceId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "getSubscription"
+   ]
+  }
+ },
+ {
+  "name": "planId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "updatePlan"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "updatePlan"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "updatePlan"
+   ]
+  }
+ },
+ {
+  "name": "conceptCode",
+  "type": "string",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "updateSubscription"
+   ]
+  }
+ },
+ {
+  "name": "serviceId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "updateSubscription"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "updateSubscription"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "billing"
+   ],
+   "operation": [
+    "updateSubscription"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "blog"
+   ]
+  }
+ },
+ {
+  "name": "blogId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "createPost"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "createPost"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "createPost"
+   ]
+  }
+ },
+ {
+  "name": "blogId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "deletePost"
+   ]
+  }
+ },
+ {
+  "name": "postId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "deletePost"
+   ]
+  }
+ },
+ {
+  "name": "blogId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "getManyPosts"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "getManyPosts"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "getManyPosts"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "getManyPosts"
+   ]
+  }
+ },
+ {
+  "name": "blogId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "getPost"
+   ]
+  }
+ },
+ {
+  "name": "postId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "getPost"
+   ]
+  }
+ },
+ {
+  "name": "blogId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "publishPost"
+   ]
+  }
+ },
+ {
+  "name": "postId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "publishPost"
+   ]
+  }
+ },
+ {
+  "name": "blogId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "unpublishPost"
+   ]
+  }
+ },
+ {
+  "name": "postId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "unpublishPost"
+   ]
+  }
+ },
+ {
+  "name": "blogId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "updatePost"
+   ]
+  }
+ },
+ {
+  "name": "postId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "updatePost"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "updatePost"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "updatePost"
+   ]
+  }
+ },
+ {
+  "name": "blogId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "uploadMedia"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "uploadMedia"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "uploadMedia"
+   ]
+  }
+ },
+ {
+  "name": "blogId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "uploadThumbnail"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "uploadThumbnail"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "blog"
+   ],
+   "operation": [
+    "uploadThumbnail"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "businessRule"
+   ]
+  }
+ },
+ {
+  "name": "domain",
+  "type": "options",
+  "show": {
+   "resource": [
+    "businessRule"
+   ],
+   "operation": [
+    "setIntegrationCallback"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "businessRule"
+   ],
+   "operation": [
+    "setIntegrationCallback"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "businessRule"
+   ],
+   "operation": [
+    "setIntegrationCallback"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "cart"
+   ]
+  }
+ },
+ {
+  "name": "cartId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "cart"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "cartId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "cart"
+   ],
+   "operation": [
+    "removeCoupon"
+   ]
+  }
+ },
+ {
+  "name": "couponId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "cart"
+   ],
+   "operation": [
+    "removeCoupon"
+   ]
+  }
+ },
+ {
+  "name": "cartId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "cart"
+   ],
+   "operation": [
+    "removeLineItem"
+   ]
+  }
+ },
+ {
+  "name": "lineItemId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "cart"
+   ],
+   "operation": [
+    "removeLineItem"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "category"
+   ]
+  }
+ },
+ {
+  "name": "contentLanguage",
+  "type": "options",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "name",
+  "type": "string",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "contentLanguage",
+  "type": "options",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "category"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "getAssociatedValues"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "getOwners"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "setAssociatedValues"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "setAssociatedValues"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "categoryCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "coupon"
+   ]
+  }
+ },
+ {
+  "name": "code",
+  "type": "string",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "type",
+  "type": "options",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "value",
+  "type": "string",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "couponId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "couponId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "couponId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "coupon"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "customer"
+   ]
+  }
+ },
+ {
+  "name": "name",
+  "type": "string",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "email",
+  "type": "string",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "customerId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "customerId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "customerId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "customer"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "customFieldId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "customFieldId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "customFieldId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "getOwners"
+   ]
+  }
+ },
+ {
+  "name": "customerId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "getValues"
+   ]
+  }
+ },
+ {
+  "name": "customerId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "setValues"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "setValues"
+   ]
+  }
+ },
+ {
+  "name": "customFieldId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "customerCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "discount"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "discount"
+   ],
+   "operation": [
+    "createPromotion"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "discount"
+   ],
+   "operation": [
+    "createPromotion"
+   ]
+  }
+ },
+ {
+  "name": "promotionId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "discount"
+   ],
+   "operation": [
+    "deletePromotion"
+   ]
+  }
+ },
+ {
+  "name": "cartId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "discount"
+   ],
+   "operation": [
+    "getCartDiscounts"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "discount"
+   ],
+   "operation": [
+    "setCallback"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "discount"
+   ],
+   "operation": [
+    "setCallback"
+   ]
+  }
+ },
+ {
+  "name": "promotionId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "discount"
+   ],
+   "operation": [
+    "updatePromotion"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "discount"
+   ],
+   "operation": [
+    "updatePromotion"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "discount"
+   ],
+   "operation": [
+    "updatePromotion"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "dispute"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "transactionId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "transactionId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "disputeId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "transactionId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "disputeId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "dispute"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ]
+  }
+ },
+ {
+  "name": "contactName",
+  "type": "string",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "contactLastname",
+  "type": "string",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "contactEmail",
+  "type": "string",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "paymentStatus",
+  "type": "options",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "products",
+  "type": "json",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "draftOrderId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "draftOrderId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "draftOrderId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "draftOrder"
+   ],
+   "operation": [
+    "confirm"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "emailTemplate"
+   ]
+  }
+ },
+ {
+  "name": "templateId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "emailTemplate"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "templateId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "emailTemplate"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "contentLanguage",
+  "type": "options",
+  "show": {
+   "resource": [
+    "emailTemplate"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "emailTemplate"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "emailTemplate"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "legacyFulfillmentEvent"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "legacyFulfillmentEvent"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "legacyFulfillmentEvent"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "legacyFulfillmentEvent"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "legacyFulfillmentEvent"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "legacyFulfillmentEvent"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "legacyFulfillmentEvent"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "legacyFulfillmentEvent"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "legacyFulfillmentEvent"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "createLabels"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "createTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "createTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "createTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "createTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "deleteTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "deleteTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_tracking_event_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "deleteTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "downloadLabel"
+   ]
+  }
+ },
+ {
+  "name": "label_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "downloadLabel"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "downloadLabel"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "downloadLabel"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "getManyTrackingEvents"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "getManyTrackingEvents"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "getTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "getTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_tracking_event_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "getTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "updateLabel"
+   ]
+  }
+ },
+ {
+  "name": "label_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "updateLabel"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "updateLabel"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "updateLabel"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "updateManyLabels"
+   ]
+  }
+ },
+ {
+  "name": "order_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "updateTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "updateTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "fulfillment_order_tracking_event_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "updateTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "updateTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "fulfillmentOrder"
+   ],
+   "operation": [
+    "updateTrackingEvent"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "kit"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "kit"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "location"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "options",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "options",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "options",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "getInventoryLevels"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "getInventoryLevels"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "getInventoryLevels"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "getInventoryLevels"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "getInventoryLevels"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "options",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "makeDefault"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "options",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "contentLanguage",
+  "type": "options",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "location"
+   ],
+   "operation": [
+    "updatePriorities"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "metafield"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "owner_resource",
+  "type": "options",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "metafield"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "order"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "cancel"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "cancel"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "cancel"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "close"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "editUnstable"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "editUnstable"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "editUnstable"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "fulfillLegacy"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "fulfillLegacy"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "fulfillLegacy"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "getEditions"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "getHistoryValues"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "getSubscriptions"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "packLegacy"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "order"
+   ],
+   "operation": [
+    "reopen"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "customFieldId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "customFieldId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "customFieldId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "getOwners"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "getValues"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "setValues"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "setValues"
+   ]
+  }
+ },
+ {
+  "name": "customFieldId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "orderCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "page"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "page"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "page"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "pageId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "page"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "pageId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "page"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "page"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "page"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "page"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "pageId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "page"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "page"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "page"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "paymentOption"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "paymentProvider"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "paymentProvider"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "paymentProvider"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "paymentProviderId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "paymentProvider"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "paymentProviderId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "paymentProvider"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "paymentProviderId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "paymentProvider"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "paymentProvider"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "paymentProvider"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "product"
+   ]
+  }
+ },
+ {
+  "name": "contentLanguage",
+  "type": "options",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "name",
+  "type": "string",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "sku",
+  "type": "string",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "getBySku"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "contentLanguage",
+  "type": "options",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "product"
+   ],
+   "operation": [
+    "updateStockPrice"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "getAssociatedValues"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "getOwners"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "setAssociatedValues"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "setAssociatedValues"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "productImage"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "image_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productImage"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "productVariant"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "variantValues",
+  "type": "fixedCollection",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "options",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "options",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "replaceAll"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "replaceAll"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "options",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "variantValues",
+  "type": "fixedCollection",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "updateMany"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "updateMany"
+   ]
+  }
+ },
+ {
+  "name": "product_id",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "updateStock"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "updateStock"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productVariant"
+   ],
+   "operation": [
+    "updateStock"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "getAssociatedValues"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "getOwners"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "setAssociatedValues"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "setAssociatedValues"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "productVariantCustomField"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "script"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "script"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "script"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "scriptId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "script"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "scriptId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "script"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "script"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "script"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "script"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "scriptId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "script"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "script"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "script"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "shippingCarrier"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "shippingCarrier"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "shippingCarrier"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrier"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrier"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrier"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "shippingCarrier"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "shippingCarrier"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ]
+  }
+ },
+ {
+  "name": "carrier_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "carrier_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "option_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "carrier_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "option_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "carrier_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "carrier_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "option_id",
+  "type": "string",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "shippingCarrierOption"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "store"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "store"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "store"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "transaction"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "transaction"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "transaction"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "transaction"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "transaction"
+   ],
+   "operation": [
+    "createEvent"
+   ]
+  }
+ },
+ {
+  "name": "transactionId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "transaction"
+   ],
+   "operation": [
+    "createEvent"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "transaction"
+   ],
+   "operation": [
+    "createEvent"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "transaction"
+   ],
+   "operation": [
+    "createEvent"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "transaction"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "transactionId",
+  "type": "string",
+  "show": {
+   "resource": [
+    "transaction"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "orderId",
+  "type": "resourceLocator",
+  "show": {
+   "resource": [
+    "transaction"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "options",
+  "show": {
+   "resource": [
+    "webhook"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "create"
+   ]
+  }
+ },
+ {
+  "name": "webhookId",
+  "type": "options",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "delete"
+   ]
+  }
+ },
+ {
+  "name": "webhookId",
+  "type": "options",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "get"
+   ]
+  }
+ },
+ {
+  "name": "filters",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "returnAll",
+  "type": "boolean",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "limit",
+  "type": "number",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "getMany"
+   ]
+  }
+ },
+ {
+  "name": "webhookId",
+  "type": "options",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "bodyFields",
+  "type": "collection",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "webhook"
+   ],
+   "operation": [
+    "update"
+   ]
+  }
+ },
+ {
+  "name": "operation",
+  "type": "hidden",
+  "show": {
+   "resource": [
+    "customApiCall"
+   ]
+  }
+ },
+ {
+  "name": "requestScope",
+  "type": "options",
+  "show": {
+   "resource": [
+    "customApiCall"
+   ]
+  }
+ },
+ {
+  "name": "requestMethod",
+  "type": "options",
+  "show": {
+   "resource": [
+    "customApiCall"
+   ]
+  }
+ },
+ {
+  "name": "endpoint",
+  "type": "string",
+  "show": {
+   "resource": [
+    "customApiCall"
+   ]
+  }
+ },
+ {
+  "name": "bodyType",
+  "type": "options",
+  "show": {
+   "resource": [
+    "customApiCall"
+   ]
+  }
+ },
+ {
+  "name": "body",
+  "type": "json",
+  "show": {
+   "resource": [
+    "customApiCall"
+   ]
+  }
+ },
+ {
+  "name": "query",
+  "type": "json",
+  "show": {
+   "resource": [
+    "customApiCall"
+   ]
+  }
+ },
+ {
+  "name": "responseType",
+  "type": "options",
+  "show": {
+   "resource": [
+    "customApiCall"
+   ]
+  }
+ },
+ {
+  "name": "binaryPropertyName",
+  "type": "string",
+  "show": {
+   "resource": [
+    "customApiCall"
+   ]
+  }
+ }
+]
