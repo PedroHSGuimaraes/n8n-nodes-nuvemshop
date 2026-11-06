@@ -110,7 +110,7 @@ A pessoa cria e mantém tabelas de preço B2B com tabela e cliente em lista pesq
    - `getCategories`, `getVariants` e `getCustomers` pedem `per_page` 50; uma operação sem `pageSize`, como `product.getMany`, continua pedindo 200
 5. The parâmetros `priceTableId` e `customerId` SHALL ser `resourceLocator` com modos `list` (padrão) e `id` na versão 2, e texto na versão 1
 6. WHEN o editor pede a lista de tabelas sem token THEN o `listSearch.searchPriceTables` SHALL chamar `GET /products/price-tables` com `page` 1 e `per_page` 10 e devolver `{ results }` com `name` `<name> — <id>` e `value` igual ao `id`, mais `paginationToken` `"2"` quando a página veio com 10 itens
-7. IF a API responde `409` em `addCustomers` THEN o sistema SHALL lançar `NodeApiError` com o corpo da API, que lista os clientes em conflito
+7. IF a API responde `409` em `addCustomers` THEN o sistema SHALL lançar `NodeApiError` e preservar o corpo da API, que lista os clientes em conflito, em `cause.response.body`
 8. WHEN o `execute` roda `priceTable.deleteVariant` com `priceTableId` `5` e `variantId` `136548285` THEN o sistema SHALL enviar DELETE em /products/price-tables/5/product-variants/136548285
 
 ### S4: Remoções em massa exigem confirmação (P2)
@@ -124,7 +124,8 @@ A pessoa cria e mantém tabelas de preço B2B com tabela e cliente em lista pesq
 3. IF a confirmação está desligada THEN o sistema SHALL lançar `NodeOperationError` e não fazer nenhuma requisição
    - desligada → erro, 0 requisições; ligada → 1 requisição DELETE
 4. WHEN o `execute` roda `businessRule.deleteIntegration` com `domain` `payments`, `events` `payments/before-filter` e a confirmação ligada THEN o sistema SHALL enviar DELETE em /business_rules/integrations/payments com a query `events=payments/before-filter`
-5. IF `events` está vazio em `businessRule.deleteIntegration` THEN o sistema SHALL lançar `NodeOperationError` antes da requisição
+5. IF `events` está vazio, só com espaços ou só com vírgulas em `businessRule.deleteIntegration` THEN o sistema SHALL lançar `NodeOperationError` antes da requisição
+   - `""` → erro; `" , "` → erro; `"all"` → uma requisição
 6. WHEN o `execute` roda `discount.deleteAllPromotions` com a confirmação ligada THEN o sistema SHALL enviar DELETE em /promotions sem corpo
 
 ### S5: Campos novos em rotas já cobertas (P2)

@@ -4,7 +4,7 @@ Build: `npm run build --silent`; `npx tsc --noEmit`; `rm -rf /tmp/ns-lint && mkd
 Run unit: `npm run build --silent && node --test --test-reporter=spec test/*.test.cjs`
 Plan: `.specs/features/rotas-novas/plan.md`
 
-37 checks in 6 slices · 4 one-way doors · 0 open, of which 0 block
+32 checks in 6 slices · 4 one-way doors · 0 open, of which 0 block
 
 ## Checks
 
@@ -49,6 +49,7 @@ Proof: run unit | ✔ priceTable addCustomers envia o array de clientes
 
 **C12** - A paginação respeita `per_page` 10 nas tabelas, 50 nas sublistas e 200 nas demais (AC 4)
 Proof: run unit | ✔ paginação usa per_page 10, 50 e 200 conforme a operação
+Proof: run unit | ✔ paginação sem Return All respeita o limite e o per_page da operação em cada página
 
 **C13** - `priceTableId` e `customerId` são Resource Locator na v2 e texto na v1 (AC 5)
 Proof: run unit | ✔ priceTable usa Resource Locator na v2 e texto na v1
@@ -58,9 +59,16 @@ Proof: run unit | ✔ listSearch de tabelas de preço pede uma página de 10 e d
 
 **C15** - Um 409 em `addCustomers` vira NodeApiError com o corpo da API (AC 7)
 Proof: run unit | ✔ addCustomers com 409 lança NodeApiError
+Proof: run unit | ✔ addCustomers com 409 preserva o corpo com os clientes em conflito
 
 **C16** - `priceTable.deleteVariant` envia DELETE na variante (AC 8)
 Proof: run unit | ✔ priceTable deleteVariant chama o DELETE da variante
+
+**C30** - `create` e `update` de priceTable falham sem `default_discount`, sem requisição (AC 2)
+Proof: run unit | ✔ create e update de priceTable exigem name e default_discount antes de pedir à API
+
+**C31** - A busca de tabelas filtra o nome por contém, sem acento nem caixa (AC 6)
+Proof: run unit | ✔ listSearch de tabelas de preço filtra o nome por contém, sem acento nem caixa
 
 ### S4 - Remoções em massa com confirmação
 
@@ -75,6 +83,10 @@ Proof: run unit | ✔ deleteIntegration envia events na query
 
 **C20** - `deleteIntegration` sem `events` falha antes da requisição (AC 5)
 Proof: run unit | ✔ deleteIntegration sem events falha antes da requisição
+Proof: run unit | ✔ deleteIntegration com events só de vírgulas e espaços falha antes da requisição
+
+**C32** - Só o booleano `true` libera a remoção em massa; texto, número e nulo recusam (AC 3)
+Proof: run unit | ✔ só o booleano verdadeiro libera a remoção em massa
 
 **C21** - `deleteAllPromotions` ligada envia DELETE /promotions sem corpo (AC 6)
 Proof: run unit | ✔ deleteAllPromotions ligada envia DELETE /promotions sem corpo
@@ -118,18 +130,18 @@ Proof: run unit | ✔ o node continua usableAsTool e inclui priceTable
 | tamanhos de página (3) | 10 C12 · 50 C12 · 200 C12 | - |
 | parâmetros com Resource Locator (2) | `priceTableId` C13 · `customerId` C13 | - |
 | operações com confirmação (2) | `deleteAllPromotions` C17, C18, C21 · `deleteIntegration` C17, C18, C19, C20 | - |
-| `GET /payment_providers/options` statuses (3) | 200 C1 · 401 C1 · 403 C1 | - |
-| `POST /products/price-tables` statuses (2) | 201 C10 · 401 C10 | - |
-| `GET /products/price-tables` statuses (2) | 200 C12 · 401 C12 | - |
-| `PUT /products/price-tables/{id}` statuses (2) | 200 C9 · 401 C9 | - |
-| `/products/price-tables/{id}/categories` e `/products/price-tables/{id}/product-variants` statuses (2) | 204 C16 · 401 C16 | - |
+| `GET /payment_providers/options` statuses (3) | 200 C1 · 401 C15 · 403 C15 | - |
+| `POST /products/price-tables` statuses (2) | 201 C10 · 401 C15 | - |
+| `GET /products/price-tables` statuses (2) | 200 C12 · 401 C15 | - |
+| `PUT /products/price-tables/{id}` statuses (2) | 200 C30 · 401 C15 | - |
+| `/products/price-tables/{id}/categories` e `/products/price-tables/{id}/product-variants` statuses (2) | 204 C16 · 401 C15 | - |
 | `/products/price-tables/{id}/customers` statuses (3) | 204 C11 · 409 C15 · 401 C15 | - |
-| `DELETE /promotions` statuses (2) | 204 C21 · 401 C21 | - |
-| `DELETE /business_rules/integrations/{domain}` statuses (3) | 204 C19 · 401 C19 · 403 C19 | - |
+| `DELETE /promotions` statuses (2) | 204 C21 · 401 C15 | - |
+| `DELETE /business_rules/integrations/{domain}` statuses (3) | 204 C19 · 401 C15 · 403 C15 | - |
 | portas de sentido único em Landing (4) | confirmação C17, C18 · pageSize C12 · nomes C9, C13 · versão C26 | - |
 
 - Claims naming a status code, route or response shape: C1, C9, C10, C11, C15, C16, C19, C21 - each has a proof that crosses the boundary
-- Os códigos 401 e 403 vêm do transporte comum (`NodeApiError` em qualquer resposta de erro), provados por C15; nenhum teste chama a API real
+- Os códigos 2xx são a resposta que a API devolve e o node repassa sem mudar; os testes simulam essa resposta e conferem método, rota, query e corpo enviados. Os códigos 401, 403 e 409 vêm do transporte comum, que converte qualquer erro em `NodeApiError` (C15 prova a conversão e o corpo preservado em `cause`); nenhum teste chama a API real
 
 ## Swept
 
