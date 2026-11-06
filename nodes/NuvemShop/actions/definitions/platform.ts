@@ -137,6 +137,35 @@ const billingOperations: NuvemShopOperationDefinition[] = [
 ];
 
 const businessRuleOperations: NuvemShopOperationDefinition[] = [
+	// DELETE /business_rules/integrations/{domain}?events=: remove callbacks do app (o PUT já existia).
+	{
+		name: 'Delete Integration',
+		value: 'deleteIntegration',
+		action: 'Delete business-rule callbacks',
+		description:
+			'Delete the business-rule callbacks of this app in one domain. Pass the exact events in Filters (for example payments/before-filter), comma-separated, or all to delete every callback of the app in every domain. Without the callback, Nuvemshop stops asking the partner endpoint before filtering payment or shipping options, prioritizing locations, or finishing a cart. The API answers 204 with no body. Turn on the confirmation switch to run it.',
+		method: 'DELETE',
+		path: '/business_rules/integrations/{domain}',
+		pathParameters: [
+			pathParameter('domain', 'Domain', 'business-rule domain', {
+				placeholder: 'e.g. payments',
+				description:
+					'Exact supported domain: payments, shipping, location, or cart. It must match the domain of the events being deleted.',
+			}),
+		],
+		query: jsonQuery(
+			'events is required: a comma-separated list of the events whose callbacks are deleted (payments/before-filter, shipping/before-filter, location/prioritization, cart/before-finish), or all.',
+			'{"events":"payments/before-filter"}',
+		),
+		// A API exige `events`; sem ele o node falha localmente, sem chamar a Nuvemshop.
+		requiredQuery: ['events'],
+		confirmation: {
+			name: 'confirmDeleteIntegration',
+			displayName: 'Confirm Delete Integration',
+			description:
+				'Warning: deletes the business-rule callbacks listed in Events (all deletes every callback of the app in the store) and cannot be undone. Turn on to confirm; when off, the operation fails before any request is sent',
+		},
+	},
 	{
 		name: 'Get Payment Options',
 		value: 'getPaymentOptions',
@@ -191,6 +220,23 @@ const discountOperations: NuvemShopOperationDefinition[] = [
 			'Promotion definition. Prefer the granular combines_with_quantity_discounts, combines_with_free_shipping, combines_with_cart_amount_discounts, combines_with_app_discounts, and combines_with_price_discounts flags. combines_with_other_discounts is deprecated and must never be sent together with granular flags.',
 			'{"name":"Second item 50% off","description":"Buy two eligible items and receive 50% off the second","disclaimer":"Valid while stocks last","allocation_type":"line_item","active":true,"combines_with_quantity_discounts":false,"combines_with_free_shipping":true,"combines_with_cart_amount_discounts":false,"combines_with_app_discounts":false,"combines_with_price_discounts":false,"translations":[{"lang":"pt-br","name":"Segunda unidade com 50%","description":"Compre duas unidades elegiveis"}]}',
 		),
+	},
+	// DELETE /promotions (sem ID): apaga TODAS as promoções do app na loja, por isso exige confirmação.
+	{
+		name: 'Delete All Promotions',
+		value: 'deleteAllPromotions',
+		action: 'Delete all promotions of the app',
+		description:
+			'Delete every promotion created by this app for the connected store in one call. This is destructive and cannot be undone: active carts are recalculated without these promotions. Promotions of other apps are not touched. The API answers 204 with no body. To remove a single promotion use Delete Promotion. Turn on the confirmation switch to run it.',
+		method: 'DELETE',
+		path: '/promotions',
+		scope: 'unversionedStore',
+		confirmation: {
+			name: 'confirmDeleteAllPromotions',
+			displayName: 'Confirm Delete All Promotions',
+			description:
+				'Warning: deletes ALL promotions created by this app in the connected store and cannot be undone. Turn on to confirm; when off, the operation fails before any request is sent',
+		},
 	},
 	{
 		name: 'Delete Promotion',
