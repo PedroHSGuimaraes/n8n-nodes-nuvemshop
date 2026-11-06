@@ -47,8 +47,12 @@ describe('S6 Entrega da versão 1.3.0', () => {
 	it('o README documenta Price Table, as remoções e a Tool de IA', () => {
 		const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
 		assert.match(readme, /Price Table/);
-		for (const operacao of operationNames('priceTable')) {
-			assert.ok(readme.includes(operacao), `README sem ${operacao}`);
+		// Cada operação aparece na tabela do README com o nome e a rota (o `{priceTableId}` vira `{id}`).
+		for (const operacao of resourceDefinitions.find((r) => r.value === 'priceTable').operations) {
+			const rota = `${operacao.method} ${operacao.path.replace('{priceTableId}', '{id}')}`;
+			const linha = readme.split('\n').find((texto) => texto.includes(`\`${rota}\``));
+			assert.ok(linha, `README sem a rota ${rota}`);
+			assert.ok(linha.includes(operacao.name), `README sem o nome ${operacao.name} em ${rota}`);
 		}
 		assert.match(readme, /Delete All Promotions/);
 		assert.match(readme, /Delete Integration/);

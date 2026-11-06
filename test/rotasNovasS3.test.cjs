@@ -165,4 +165,61 @@ describe('S3 Recurso Price Table', () => {
 		assert.equal(context.requests[0].method, 'DELETE');
 		assert.equal(context.requests[0].url, '/products/price-tables/5/product-variants/136548285');
 	});
+
+	it('addCustomers com 409 preserva o corpo com os clientes em conflito', async () => {
+		await assert.rejects(
+			run('priceTable', 'addCustomers', { priceTableId: '1', body: '["123"]' }, async () => {
+				throw Object.assign(new Error('Conflict'), {
+					httpCode: '409',
+					response: { body: { code: 409, errors: [{ customers: ['123'] }] } },
+				});
+			}),
+			(error) =>
+				error.name === 'NodeApiError' &&
+				// O corpo da API fica em `cause`: é ali que a pessoa lê os IDs em conflito.
+				error.cause.response.body.errors[0].customers[0] === '123',
+		);
+	});
+
+	it('paginação sem Return All respeita o limite e o per_page da operação em cada página', async () => {
+		// Devolve uma página cheia (do tamanho pedido) e copia o `qs`, porque o transporte o altera.
+		const sequencia = async (operacao, limit) => {
+			const pedidos = [];
+			await run(
+				'priceTable',
+				operacao,
+				{ priceTableId: '1', customerId: '9', returnAll: false, limit },
+				async (options) => {
+					pedidos.push(options.qs.per_page);
+					return Array.from({ length: options.qs.per_page }, (_unused, index) => ({ id: index }));
+				},
+			);
+			return pedidos;
+		};
+		assert.deepEqual(await sequencia('getMany', 25), [10, 10, 5]);
+		assert.deepEqual(await sequencia('getMany', 3), [3]);
+		assert.deepEqual(await sequencia('getByCustomer', 15), [10, 5]);
+		assert.deepEqual(await sequencia('getCustomers', 75), [50, 25]);
+	});
+
+	it('create e update de priceTable exigem name e default_discount antes de pedir à API', async () => {
+		for (const operacao of ['create', 'update']) {
+			const context = executeContext(2, { priceTableId: '1', name: 'Atacado' });
+			await assert.rejects(
+				executeDefinedOperation.call(context, findOperation('priceTable', operacao), 0),
+				(error) => error.name === 'NodeOperationError',
+				operacao,
+			);
+			assert.equal(context.requests.length, 0, operacao);
+		}
+	});
+
+	it('listSearch de tabelas de preço filtra o nome por contém, sem acento nem caixa', async () => {
+		const context = editorContext(() => [
+			{ id: '1', name: 'Atacádo SP' },
+			{ id: '2', name: 'Varejo' },
+		]);
+		const resultado = await listSearch.searchPriceTables.call(context, 'ATACADO');
+		assert.deepEqual(resultado.results, [{ name: 'Atacádo SP — 1', value: '1' }]);
+	});
 });
