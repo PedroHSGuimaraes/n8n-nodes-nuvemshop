@@ -22,6 +22,8 @@ const PAGE_SIZE = 50;
 const CATEGORY_PAGE_SIZE = 200;
 const CATEGORY_MAX_PAGES = 5;
 const CATEGORY_MAX_RESULTS = 20;
+// A lista de tabelas de preço aceita no máximo 10 por página (doc 2025-03, Price Tables).
+const PRICE_TABLE_PAGE_SIZE = 10;
 
 /** Tira acento e caixa para a busca "contém" achar "Camisêtas" ao digitar "camise". */
 function normalize(text: string): string {
@@ -191,5 +193,29 @@ export const listSearch = {
 		}
 
 		return result(results, lastPageFull ? String(page) : undefined);
+	},
+	/**
+	 * A rota `GET /products/price-tables` aceita só `page` e `per_page` (máximo 10), sem busca no
+	 * servidor. Por isso pedimos uma página por chamada e filtramos o nome aqui por "contém";
+	 * o token da próxima página sai quando a página veio cheia (pode haver mais).
+	 */
+	async searchPriceTables(
+		this: ILoadOptionsFunctions,
+		filter?: string,
+		paginationToken?: string,
+	): Promise<INodeListSearchResult> {
+		// Número da página pedida pelo editor; sem token vale a página 1.
+		const page = pageFromToken(paginationToken);
+		// Texto de busca sem acento nem caixa, para "atacado" achar "Atacádo".
+		const search = normalize((filter ?? '').trim());
+		const items = await fetchPage(this, '/products/price-tables', {}, page, PRICE_TABLE_PAGE_SIZE);
+		// Sem texto de busca, mantém a página inteira; com texto, filtra o nome da tabela.
+		const kept = search
+			? items.filter((item) => normalize(translatedText(item.name)).includes(search))
+			: items;
+		return result(
+			kept.map((item) => labelWithId(item, translatedText(item.name))),
+			items.length >= PRICE_TABLE_PAGE_SIZE ? String(page + 1) : undefined,
+		);
 	},
 };

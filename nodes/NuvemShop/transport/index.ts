@@ -29,6 +29,8 @@ interface NuvemShopRequestConfig {
 	responseType?: 'json' | 'binary';
 	apiVersion?: '2025-03' | 'v1' | 'unstable';
 	bodyType?: 'json' | 'multipart';
+	// Teto de `per_page` quando a rota aceita menos que os 200 padrão (só usado na paginação).
+	maxPageSize?: number;
 }
 
 function credentialString(credentials: ICredentialDataDecryptedObject, name: string): string {
@@ -217,8 +219,10 @@ export async function nuvemShopApiRequestAllItems(
 
 	while (pageCount < 1000 && returnData.length < maxItems) {
 		pageCount += 1;
-		const remaining = Number.isFinite(maxItems) ? maxItems - returnData.length : 200;
-		const pageSize = Math.max(1, Math.min(200, remaining));
+		// O teto da operação (10 ou 50 nas Price Tables) vale no lugar dos 200 padrão da API.
+		const pageLimit = config.maxPageSize ?? 200;
+		const remaining = Number.isFinite(maxItems) ? maxItems - returnData.length : pageLimit;
+		const pageSize = Math.max(1, Math.min(pageLimit, remaining));
 		query.page = page;
 		query.per_page = pageSize;
 

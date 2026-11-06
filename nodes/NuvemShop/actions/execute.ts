@@ -233,6 +233,8 @@ export async function executeDefinedOperation(
 			{
 				scope: operation.scope,
 				apiVersion: operation.apiVersion,
+				// Repassa o teto de `per_page` da operação; sem ele a paginação usa 200.
+				maxPageSize: operation.pageSize,
 			},
 		);
 	}

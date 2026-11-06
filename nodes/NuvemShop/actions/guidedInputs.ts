@@ -35,6 +35,9 @@ const REQUIRED_FIELDS: Record<string, string[]> = {
 		'products',
 	],
 	'POST /products': ['name'],
+	// Price Table: a doc exige name e default_discount na criação e na troca (400 sem eles).
+	'POST /products/price-tables': ['name', 'default_discount'],
+	'PUT /products/price-tables/{priceTableId}': ['name', 'default_discount'],
 };
 
 const FIELD_LOAD_OPTIONS: Record<

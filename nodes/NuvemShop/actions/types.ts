@@ -30,6 +30,9 @@ export interface NuvemShopOperationDefinition {
 	advancedBody?: boolean;
 	query?: NuvemShopJsonInput;
 	paginated?: boolean;
+	// Teto de `per_page` desta operação. Sem ele o node pede 200 por página; as rotas de Price
+	// Table só aceitam 10 ou 50, e acima disso a API recusa ou corta a página (porta 2 do plano).
+	pageSize?: number;
 	responseProperty?: string;
 	responseType?: 'json' | 'binary';
 	binaryFileName?: string;
