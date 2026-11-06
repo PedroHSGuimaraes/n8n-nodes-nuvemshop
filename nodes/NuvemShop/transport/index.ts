@@ -20,6 +20,10 @@ export type NuvemShopContext =
 	| IHookFunctions
 	| IWebhookFunctions;
 
+// Tempo máximo de espera por resposta da Nuvemshop, em milissegundos (AD-005).
+// 30 s deixa folga para multipart e arquivo binário; as listas respondem bem antes disso.
+const REQUEST_TIMEOUT_MS = 30000;
+
 interface NuvemShopRequestConfig {
 	scope?: NuvemShopRequestScope;
 	responseType?: 'json' | 'binary';
@@ -99,6 +103,8 @@ export async function nuvemShopApiRequest(
 		qs,
 		body,
 		json: config.responseType !== 'binary' && config.bodyType !== 'multipart',
+		// Sem limite de tempo, uma API travada prende a execução do workflow para sempre.
+		timeout: REQUEST_TIMEOUT_MS,
 	};
 
 	if (config.responseType === 'binary') options.encoding = 'arraybuffer';

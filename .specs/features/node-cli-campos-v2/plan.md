@@ -87,7 +87,8 @@ O pacote compila, passa no lint oficial, tem `timeout` em toda chamada e publica
 1. WHEN `npm run lint` roda THEN `n8n-node lint` SHALL sair com código 0 e imprimir 0 erros e 0 avisos
    - o erro de hoje é a categoria `Marketing` em `NuvemShop.node.json` → vira `Marketing & Content`; o aviso de hoje é o `eslint-disable` do trigger, na linha 17 → removido
 2. The package.json SHALL ter `@n8n/node-cli` `0.55.5` em `devDependencies`, `n8n-workflow` `^2.46.5`, `"n8n.strict": true`, `peerDependencies` `{ "n8n-workflow": "*" }`, nenhum campo `dependencies`, nenhuma referência a gulp e o campo `funding` do tipo individual apontando para o Buy Me a Coffee do dono (AD-010)
-3. The package-lock.json SHALL resolver `n8n-workflow` em versão 2.46.x ou mais nova, e `npm audit` SHALL listar no máximo 3 vulnerabilidades altas (hoje 5)
+3. The package-lock.json SHALL resolver `n8n-workflow` em versão 2.46.x ou mais nova, e `npm audit --omit=dev` SHALL listar 0 vulnerabilidades
+   - medido na construção: o `npm audit` completo caiu de 30 para 25 altas (todas na árvore de desenvolvimento: node-cli, release-it, n8n-workflow); sem os pacotes de desenvolvimento são 0
 4. WHEN `nuvemShopApiRequest` monta a requisição de qualquer rota THEN o objeto passado a `httpRequestWithAuthentication` SHALL ter `timeout` igual a 30000
 5. IF a Nuvemshop não responde em 30 s THEN o node SHALL lançar `NodeApiError` em vez de ficar esperando
 6. WHEN um Pull Request abre THEN o workflow ci.yml SHALL rodar `npm ci`, `npm run lint`, `npm test` e `npm run build`, com a mesma `node-version` do publish.yml
