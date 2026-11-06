@@ -1,9 +1,9 @@
 # rotas-novas proofs
 
-**HEAD**: 71aba40
-**Tree**: clean
+**HEAD**: 045ea72
+**Tree**: dirty - test/fixtures/v1-parameters.json, test/fixtures/v2-parameters-1.2.0.json
 **Shell**: /bin/sh
-**Result**: 33 pass, 0 fail
+**Result**: 39 pass, 0 fail
 
 | Check | Proof | Result |
 | --- | --- | --- |
@@ -19,14 +19,20 @@
 | C10 | `run unit / ✔ priceTable create envia o corpo da tabela` | pass |
 | C11 | `run unit / ✔ priceTable addCustomers envia o array de clientes` | pass |
 | C12 | `run unit / ✔ paginação usa per_page 10, 50 e 200 conforme a operação` | pass |
+| C12 | `run unit / ✔ paginação sem Return All respeita o limite e o per_page da operação em cada página` | pass |
 | C13 | `run unit / ✔ priceTable usa Resource Locator na v2 e texto na v1` | pass |
 | C14 | `run unit / ✔ listSearch de tabelas de preço pede uma página de 10 e devolve o token` | pass |
 | C15 | `run unit / ✔ addCustomers com 409 lança NodeApiError` | pass |
+| C15 | `run unit / ✔ addCustomers com 409 preserva o corpo com os clientes em conflito` | pass |
 | C16 | `run unit / ✔ priceTable deleteVariant chama o DELETE da variante` | pass |
+| C30 | `run unit / ✔ create e update de priceTable exigem name e default_discount antes de pedir à API` | pass |
+| C31 | `run unit / ✔ listSearch de tabelas de preço filtra o nome por contém, sem acento nem caixa` | pass |
 | C17 | `run unit / ✔ as duas remoções têm método, caminho e confirmação desligada` | pass |
 | C18 | `run unit / ✔ remoção com confirmação desligada falha sem requisição` | pass |
 | C19 | `run unit / ✔ deleteIntegration envia events na query` | pass |
 | C20 | `run unit / ✔ deleteIntegration sem events falha antes da requisição` | pass |
+| C20 | `run unit / ✔ deleteIntegration com events só de vírgulas e espaços falha antes da requisição` | pass |
+| C32 | `run unit / ✔ só o booleano verdadeiro libera a remoção em massa` | pass |
 | C21 | `run unit / ✔ deleteAllPromotions ligada envia DELETE /promotions sem corpo` | pass |
 | C22 | `run unit / ✔ order create envia inventory_behaviour claim` | pass |
 | C23 | `run unit / ✔ a descrição de order create explica o claim e o 422` | pass |
@@ -46,21 +52,21 @@
 `Run unit` - exit 0
 
 ```
-  ✔ preserves non-empty legacy array bodies and rejects the wrong body shape (0.516457ms)
-  ✔ rejects an empty required body before making the API request (0.378786ms)
-✔ Nuvem Shop guided request fields (8.128642ms)
+  ✔ preserves non-empty legacy array bodies and rejects the wrong body shape (0.418532ms)
+  ✔ rejects an empty required body before making the API request (0.317661ms)
+✔ Nuvem Shop guided request fields (6.375019ms)
 ▶ Nuvem Shop dynamic selectors
-  ✔ does not request variants while the parent product is an unresolved expression (0.304662ms)
-  ✔ adds IDs to dynamic option labels so duplicate names stay distinguishable (0.583682ms)
-✔ Nuvem Shop dynamic selectors (1.070872ms)
-ℹ tests 104
+  ✔ does not request variants while the parent product is an unresolved expression (0.270119ms)
+  ✔ adds IDs to dynamic option labels so duplicate names stay distinguishable (0.468815ms)
+✔ Nuvem Shop dynamic selectors (0.883627ms)
+ℹ tests 110
 ℹ suites 22
-ℹ pass 104
+ℹ pass 110
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 1765.154948
+ℹ duration_ms 5417.382848
 ```
 
 `rm -rf /tmp/ns-lint && mkdir /tmp/ns-lint && git archive HEAD / tar -x -C /tmp/ns-lint && ln -s "$PWD/node_mod` - exit 0
