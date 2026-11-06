@@ -146,7 +146,7 @@ Proof: run unit | ✔ o node continua usableAsTool e inclui priceTable
 ## Handoff
 
 - **Settled mid-build:** none
-- **Dispatched:** none
-- **Boundary:** none
+- **Dispatched:** Verifier (sub-agent sonnet) em HEAD 71aba40 (checks C1-C29 fechados, proofs.md verde)
+- **Boundary:** C1-C29 fechados em `71aba40`
 - **Abandoned:** none
 - **Walked:** none
