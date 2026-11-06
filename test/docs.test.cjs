@@ -53,7 +53,9 @@ describe('S5 documentação e lançamento', () => {
 
 	it('versão 1.2.0 e CHANGELOG com a seção 1.2.0', () => {
 		const pkg = JSON.parse(read('package.json'));
-		assert.equal(pkg.version, '1.2.0');
+		// A versão do pacote avança a cada lançamento (a 1.3.0 é provada em rotasNovasS6); aqui só
+		// se exige que o pacote não tenha voltado antes da 1.2.0, e a seção 1.2.0 segue no histórico.
+		assert.ok(Number(pkg.version.split('.')[1]) >= 2, pkg.version);
 		const changelog = read('CHANGELOG.md');
 		const section = changelog.split(/^## /m).find((part) => part.startsWith('1.2.0'));
 		assert.ok(section, 'CHANGELOG sem a seção ## 1.2.0');

@@ -32,7 +32,7 @@ Node comunitário do n8n para integrar **Nuvemshop** e **Tiendanube**. Inclui um
 
 ## ✨ Funcionalidades
 
-- 198 operações explícitas organizadas em 36 recursos.
+- 217 operações explícitas organizadas em 37 recursos, incluindo Price Table (tabelas de preço B2B).
 - Campos guiados e tipados para payloads e filtros comuns.
 - Campos obrigatórios visíveis nas operações principais.
 - JSON avançado opcional para contratos completos e recursos novos.
@@ -111,17 +111,60 @@ O pacote instala:
 
 ### Cobertura de recursos
 
-| Domínio    | Recursos e operações                                                         |
-| ---------- | ---------------------------------------------------------------------------- |
-| Catálogo   | Category, Product, Product Variant, Product Image, custom fields e Metafield |
-| Comércio   | Customer, Coupon, Cart, Abandoned Checkout, Order e Draft Order              |
-| Pagamentos | Transaction, Dispute, Payment Option, Payment Provider e Billing             |
-| Logística  | Location, Fulfillment Order, Fulfillment Event, Shipping Carrier e opções    |
-| Conteúdo   | Blog, Page, Email Template e Script                                          |
-| Plataforma | Store, Webhook, Discount, Business Rule, Kit e Authorization                 |
-| Avançado   | Custom API Call com GET, POST, PUT, PATCH, DELETE e HEAD                     |
+| Domínio    | Recursos e operações                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| Catálogo   | Category, Product, Product Variant, Product Image, Price Table, custom fields e Metafield |
+| Comércio   | Customer, Coupon, Cart, Abandoned Checkout, Order e Draft Order                           |
+| Pagamentos | Transaction, Dispute, Payment Option, Payment Provider e Billing                          |
+| Logística  | Location, Fulfillment Order, Fulfillment Event, Shipping Carrier e opções                 |
+| Conteúdo   | Blog, Page, Email Template e Script                                                       |
+| Plataforma | Store, Webhook, Discount, Business Rule, Kit e Authorization                              |
+| Avançado   | Custom API Call com GET, POST, PUT, PATCH, DELETE e HEAD                                  |
 
 Cada recurso mostra somente operações compatíveis. Operações de leitura são o default sempre que existem. Use **Get Many** para localizar IDs antes de Update/Delete; não invente ou reutilize IDs de outro tipo de recurso.
+
+### Price Table (tabelas de preço B2B)
+
+O recurso **Price Table** gerencia as tabelas de preço da API `2025-03`: um desconto padrão para a loja inteira, exceções por categoria e exceções por variante (com preço fixo opcional) e os clientes que usam a tabela. A regra mais específica vence: variante, depois categoria, depois o desconto padrão.
+
+| Operação                       | Rota                                                              |
+| ------------------------------ | ----------------------------------------------------------------- |
+| Create                         | `POST /products/price-tables`                                     |
+| Get                            | `GET /products/price-tables/{id}`                                 |
+| Get Many                       | `GET /products/price-tables`                                      |
+| Update                         | `PUT /products/price-tables/{id}`                                 |
+| Set Categories                 | `PUT /products/price-tables/{id}/categories`                      |
+| Get Category                   | `GET /products/price-tables/{id}/categories/{categoryId}`         |
+| Get Categories                 | `GET /products/price-tables/{id}/categories`                      |
+| Delete Category                | `DELETE /products/price-tables/{id}/categories/{categoryId}`      |
+| Set Variants                   | `PUT /products/price-tables/{id}/product-variants`                |
+| Get Variant                    | `GET /products/price-tables/{id}/product-variants/{variantId}`    |
+| Get Variants                   | `GET /products/price-tables/{id}/product-variants`                |
+| Delete Variant                 | `DELETE /products/price-tables/{id}/product-variants/{variantId}` |
+| Add Customers                  | `PUT /products/price-tables/{id}/customers`                       |
+| Approve Customers              | `POST /products/price-tables/{id}/approve-customers`              |
+| Get Customers                  | `GET /products/price-tables/{id}/customers`                       |
+| Delete Customer                | `DELETE /products/price-tables/{id}/customers/{customerId}`       |
+| Get Price Tables of a Customer | `GET /products/price-tables/customers/{customerId}`               |
+
+Na versão 2 do node, a tabela e o cliente são **lista pesquisável** com a opção de colar o ID. A API devolve no máximo 10 itens por página nas tabelas e 50 nas sublistas; **Return All** respeita esses limites. Um cliente só pode estar em uma tabela: se algum cliente do lote já tem tabela, **Add Customers** falha inteiro com `409` e a resposta lista os clientes em conflito. Para mudar um cliente de tabela, use antes **Delete Customer**.
+
+#### Exemplo: criar uma tabela e ligar clientes
+
+1. Em **Price Table → Create**, preencha `Name` (por exemplo `Atacado`) e `Default Discount` (por exemplo `7.00`).
+2. Em **Price Table → Set Categories**, escolha a tabela e envie `[{"id":"1238746858","discount":"20.00"}]`.
+3. Em **Price Table → Add Customers**, escolha a tabela e envie `["123456789","654987321"]`.
+
+### Remoções em massa com confirmação
+
+Duas operações apagam vários itens de uma vez e por isso trazem um interruptor **desligado por padrão**. Sem ele ligado, a operação falha antes de qualquer requisição.
+
+| Operação                           | Rota                                                      | Interruptor                     |
+| ---------------------------------- | --------------------------------------------------------- | ------------------------------- |
+| Discount → Delete All Promotions   | `DELETE /promotions` (todas as promoções do app)          | `Confirm Delete All Promotions` |
+| Business Rule → Delete Integration | `DELETE /business_rules/integrations/{domain}?events=...` | `Confirm Delete Integration`    |
+
+Em **Delete Integration**, informe `events` em **Filters** (por exemplo `payments/before-filter`, separados por vírgula) ou `all` para apagar todos os callbacks do app.
 
 ## 📝 Preenchimento guiado
 
@@ -215,6 +258,8 @@ N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
 
 Sem essa variável, o Nuvem Shop pode não aparecer no conector **Tool** do AI Agent.
 
+Operações novas para agentes: **Price Table** (as 17 operações; use as de leitura com `$fromAI()` apenas para filtros), **Delete All Promotions** e **Delete Integration**. As duas remoções só rodam com o interruptor de confirmação ligado; deixe-o fixo e desligado, e ligue-o só após revisão humana.
+
 ### Configuração recomendada
 
 1. Adicione um **AI Agent** e conecte um Chat Model.
@@ -249,7 +294,7 @@ O **Nuvem Shop Trigger** registra webhooks ao ativar o workflow e remove os regi
 4. Use uma URL de produção HTTPS; localhost não é aceito.
 5. Ative o workflow para registrar os webhooks.
 
-Famílias suportadas: app, category, customer, order, product, product variant, custom field, domain, subscription, fulfillment, fulfillment order, label, tracking event e location.
+Famílias suportadas: app, app subscription, category, charge, checkout, coupon, customer, order, product, product variant, custom field, domain, theme, navigation, subscription, fulfillment, fulfillment order, label, tracking event e location. Os eventos `charge/*` e `app_subscription/updated` só chegam a apps com cobrança (billing).
 
 Eventos de privacidade são configurados no Portal de Parceiros:
 
@@ -330,6 +375,7 @@ A tag `vX.Y.Z` (ou o `workflow_dispatch`) dispara o workflow `publish.yml`, que 
 
 ## 📈 Versões
 
+- **1.3.0** — **Price Table e eventos novos.** Recurso Price Table com 17 operações; 13 eventos novos no Trigger (`checkout/*`, `order/in_preparation`, `order/in_fraud_analysis`, `fulfillment_order/label_created` e `label_deleted`, `charge/*`, `app_subscription/updated`, `coupon/deleted`, `theme/updated` e `navigation/updated`); Delete All Promotions e Delete Integration com confirmação; campo `inventory_behaviour` na criação de pedido; status `IN_PREPARATION` na ordem de envio. Corrige o Payment Option, que chamava uma rota inexistente. Workflows salvos não mudam.
 - **1.2.0** — **Listas pesquisáveis e datas guiadas.** Em node novo (versão 2), produto, categoria, pedido, cliente e cupom viram lista pesquisável e paginada com a opção de colar o ID; os filtros de data viram seletor; os valores de variante viram linhas de idioma e texto. Toda chamada passa a ter timeout de 30 s. Migração para o `@n8n/node-cli` 0.55.5, `n8n-workflow` 2.46 e publicação por fila de aprovação. Workflows salvos continuam na versão 1 e não mudam.
 - **1.1.0** — campos guiados, filtros, dropdowns ampliados, defaults seguros e documentação pt-BR otimizada para AI Tools.
 - **1.0.0** — primeira versão pública com 198 operações, paginação, Partner Actions, Custom API Call e Trigger HMAC.
