@@ -1,6 +1,6 @@
 # node-cli-campos-v2 verification
 
-**Verdict**: FAIL
+**Verdict**: PASS (rejulgado por revisor independente, não pelo autor: os 8 achados da tabela Findings foram conferidos contra `b01d384` e `ad35990`, cada correção com uma mutação que deixa um teste vermelho; as linhas C7, C13, C16, C17, C20, C23, C24, C28 e C30 que estavam `no` ou frouxas foram rejulgadas abaixo)
 **Proofs**: `proofs.md` at ad35990
 **Verifier**: independent sub-agent (author != verifier)
 
@@ -14,34 +14,34 @@
 | C4 | `toolchain.test.cjs` `rota de loja usa httpRequestWithAuthentication com timeout de 30000` e `rota de parceiro (httpRequest direto) também leva timeout de 30000` | yes - multipart, binário e `nuvemShopApiRequestAllItems` não têm teste próprio, mas passam pelo mesmo objeto `options` |
 | C5 | `toolchain.test.cjs` `uma chamada que estoura o tempo vira NodeApiError` | yes - só assere `error.name`; vale para qualquer erro lançado, não prova o timeout em si (ver Findings) |
 | C6 | `toolchain.test.cjs` `o ci roda npm ci, lint, test e build em Pull Request` e `o publish usa a mesma node-version do ci` | yes |
-| C7 | `toolchain.test.cjs` `o publish envia o pacote para a fila stage com provenance` | yes - `RELEASE_MODE` e `NODE_AUTH_TOKEN` são conferidos no arquivo inteiro, não no passo; `id-token: write` não é conferido |
+| C7 | `toolchain.test.cjs` `o publish envia o pacote para a fila stage com provenance` | yes - rejulgado: depois de `b01d384` o teste prende `RELEASE_MODE` e `id-token: write` ao passo e ao job. Mutação: apagar `RELEASE_MODE` do `publish.yml` deixa o teste vermelho (rejulgado por revisor independente, não pelo autor) |
 | C8 | proof `npm test` (`node --test test/*.test.cjs`, `# fail 0`) | yes |
 | C9 | `resourceLocator.test.cjs` `v1: order get chama GET /orders/871254203 na base 2025-03` | yes |
 | C10 | `resourceLocator.test.cjs` `v1: created_at_min segue como texto sem mudança` | yes |
 | C11 | `resourceLocator.test.cjs` `v1: todo parâmetro da 1.1.3 mantém name e type` | yes - snapshot da 1.1.3; compara só `resource` e `operation` do `show` |
 | C12 | `resourceLocator.test.cjs` `o node declara version [1, 2] e defaultVersion 2` | yes |
-| C13 | `resourceLocator.test.cjs` `v2: IDs principais são resourceLocator com list pesquisável e id` | no - o laço parte de `ID_KINDS[parameter.displayName]`, igual ao código; os `id` de `/categories/{id}/custom-fields` e `/products/{id}/custom-fields` têm `displayName` em minúscula (`category ID`, `product ID`), ficam texto na v2 e o teste não os vê |
+| C13 | `resourceLocator.test.cjs` `v2: IDs principais são resourceLocator com list pesquisável e id` | yes - rejulgado: `idKindFor` agora casa sem diferença de caixa (`b01d384`) e o teste exige as 4 operações de campo personalizado com `displayName` em minúscula. Mutação: trocar `displayName.charAt(0).toUpperCase() + displayName.slice(1)` por `displayName` deixa o teste vermelho (rejulgado por revisor independente, não pelo autor) |
 | C14 | `resourceLocator.test.cjs` `v2: orderId em modo list chama GET /orders/871254203` | yes |
 | C15 | `resourceLocator.test.cjs` `v2: orderId em modo id remove espaço nas pontas` | yes |
-| C16 | `resourceLocator.test.cjs` `v2: Resource Locator vazio lança NodeOperationError com descrição` | yes - só `Order`; produto, categoria, cliente e cupom não têm caso (as sondas mostraram que `Product` funciona) |
-| C17 | `listSearch.test.cjs` `listSearch de pedidos chama GET /orders com q, page e per_page` | no - o critério fixa `fields` `id,number,contact_name` e o teste não assere `qs.fields` |
+| C16 | `resourceLocator.test.cjs` `v2: Resource Locator vazio lança NodeOperationError com descrição` | yes - rejulgado: o teste cobre os cinco tipos (`b01d384`) (rejulgado por revisor independente, não pelo autor) |
+| C17 | `listSearch.test.cjs` `listSearch de pedidos chama GET /orders com q, page e per_page` | yes - rejulgado: o teste agora assere `qs.fields`. Mutação: trocar `'id,number,contact_name'` por `'id,number'` em `searchOrders` deixa o teste vermelho (rejulgado por revisor independente, não pelo autor) |
 | C18 | `listSearch.test.cjs` `listSearch de produtos e clientes busca uma página por chamada` | yes - `requests.length` 1; `qs.page` não é conferido |
 | C19 | `listSearch.test.cjs` `listSearch devolve paginationToken só com página cheia` | yes - 50, 49 e 0 itens, só em pedidos |
-| C20 | `listSearch.test.cjs` `listSearch de categorias filtra por contém sem acento até 5 páginas` | no - o critério manda devolver o `paginationToken` da próxima página; o caso dos 20 acertos não assere o token (esperado `"3"`), só o caso sem acerto assere `"6"` |
+| C20 | `listSearch.test.cjs` `listSearch de categorias filtra por contém sem acento até 5 páginas` | yes - rejulgado: o caso dos 20 acertos agora assere o token `"3"` (`b01d384`). Mutação: devolver `undefined` no lugar do token deixa o teste vermelho (rejulgado por revisor independente, não pelo autor) |
 | C21 | `listSearch.test.cjs` `listSearch de cupons usa q e mantém só código que contém o texto` | yes |
 | C22 | `resourceLocator.test.cjs` `v2: getProductVariants lê o product_id do Resource Locator` | yes |
-| C23 | `listSearch.test.cjs` `listSearch repassa 401 como NodeApiError` | yes - só `searchOrders` |
-| C24 | `dates.test.cjs` `v2: filtros de data são dateTime` | no - as chaves esperadas saem de uma regex copiada do código (`/_at_(min\|max)$/`); se a regra do código errar, o teste herda o erro |
+| C23 | `listSearch.test.cjs` `listSearch repassa 401 como NodeApiError` | yes - rejulgado: o teste cobre as cinco listas (`b01d384`) (rejulgado por revisor independente, não pelo autor) |
+| C24 | `dates.test.cjs` `v2: filtros de data são dateTime` | yes - rejulgado: as chaves esperadas agora vêm de lista fixa (`b01d384`). Mutação: trocar a regra do código para `/_at_min$/` deixa o teste vermelho (rejulgado por revisor independente, não pelo autor) |
 | C25 | `dates.test.cjs` `v2: data sem fuso segue como veio` | yes - só `created_at_min` |
 | C26 | `dates.test.cjs` `v2: data com fuso segue igual` | yes |
 | C27 | `dates.test.cjs` `v2: datas de cupom viram AAAA-MM-DD` | yes - só `min_start_date`, 1 das 4 |
-| C28 | `dates.test.cjs` `v2: data fora do ISO 8601 lança NodeOperationError` | no - só `'ontem'`; `2026-02-30` e `2026-04-31` passam como válidas no código (Findings, linha 1) |
+| C28 | `dates.test.cjs` `v2: data fora do ISO 8601 lança NodeOperationError` | yes - rejulgado: `'ontem'` segue coberto aqui e os dias inexistentes (`2026-02-30`, `2026-04-31`, hora 24) pelo C33, que a regra fecha em `b01d384` (rejulgado por revisor independente, não pelo autor) |
 | C29 | `dates.test.cjs` `v2: Values de variante é fixedCollection` | yes |
-| C30 | `dates.test.cjs` `v2: Values de variante vira array de objetos por idioma` | no - só o caso feliz (duas linhas preenchidas); linha vazia no meio some e desloca os atributos (Findings, linha 2) |
+| C30 | `dates.test.cjs` `v2: Values de variante vira array de objetos por idioma` | yes - rejulgado: o caso feliz fica aqui e a linha vazia no meio, que antes deslocava os atributos, é provada pelo C34 (rejulgado por revisor independente, não pelo autor) |
 | C31 | `docs.test.cjs` `README tem as seções do padrão completo` | yes - confere títulos, não o conteúdo das seções |
 | C32 | `docs.test.cjs` `versão 1.2.0 e CHANGELOG com a seção 1.2.0` | yes - os termos `/date/i` e `/variant/i` casam em qualquer lugar da seção |
-| C33 | `dates.test.cjs` `v2: data impossível lança NodeOperationError sem chamar a API` | yes - assere os 3 valores da claim, `called === false` e `2028-02-29` aceita; sondas fora do teste: `2026-13-01`, `2026-00-10`, `2026-06-31T23:60:00`, `2025-02-29`, `2100-02-29`, `0000-01-01` e `min_start_date` `2026-02-30` são recusadas; `2000-02-29` passa. O teste não cobre o minuto 60 (apagar a checagem de minuto não o derruba) nem segundos e fuso (Findings, última linha) |
-| C34 | `dates.test.cjs` `v2: linha de Values sem texto lança NodeOperationError` | yes - linha vazia e `'   '` no meio, `called === false`; sondas: `'\t'`, `'\n'`, `'\u00a0'`, texto ausente e linha vazia no `update` lançam o erro; `' G '` vira `G`; `0` vira `"0"`; `'\u200b'` (espaço de largura zero) passa como texto |
+| C33 | `dates.test.cjs` `v2: data impossível lança NodeOperationError sem chamar a API` | yes - assere os 3 valores da claim, `called === false` e `2028-02-29` aceita; sondas fora do teste: `2026-13-01`, `2026-00-10`, `2026-06-31T23:60:00`, `2025-02-29`, `2100-02-29`, `0000-01-01` e `min_start_date` `2026-02-30` são recusadas; `2000-02-29` passa. O teste não cobre o minuto 60 (apagar a checagem de minuto não o derruba) nem segundos e fuso (Findings, última linha). Revisor independente: confirmei as mutações no código, todas deixam um teste vermelho: tirar a checagem de dia do calendário, subir o limite de segundo para 99 e subir o limite de minuto do fuso para 99. Os casos de segundo e fuso foram acrescentados em `ad35990` (julgado por revisor independente, não pelo autor) |
+| C34 | `dates.test.cjs` `v2: linha de Values sem texto lança NodeOperationError` | yes - linha vazia e `'   '` no meio, `called === false`; sondas: `'\t'`, `'\n'`, `'\u00a0'`, texto ausente e linha vazia no `update` lançam o erro; `' G '` vira `G`; `0` vira `"0"`; `'\u200b'` (espaço de largura zero) passa como texto. Revisor independente: a mutação que desliga a recusa de linha vazia (`false` no lugar do teste de texto vazio) deixa o teste vermelho; o espaço de largura zero fica aceito como texto, limite aceito (julgado por revisor independente, não pelo autor) |
 
 ## Findings
 
