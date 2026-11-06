@@ -61,7 +61,8 @@ function assertConfirmed(
 	);
 }
 
-// Confere que cada filtro obrigatório da query tem valor; texto em branco conta como ausente.
+// Confere que cada filtro obrigatório da query tem valor. Texto em branco e lista só de vírgulas
+// (" , ") contam como ausentes: a API receberia `events= , ` e responderia erro.
 function assertRequiredQuery(
 	context: IExecuteFunctions,
 	operation: NuvemShopOperationDefinition,
@@ -69,7 +70,11 @@ function assertRequiredQuery(
 	itemIndex: number,
 ): void {
 	for (const name of operation.requiredQuery ?? []) {
-		if (String(query[name] ?? '').trim()) continue;
+		// Separa por vírgula e exige ao menos um item com texto.
+		const hasValue = String(query[name] ?? '')
+			.split(',')
+			.some((item) => item.trim());
+		if (hasValue) continue;
 		throw new NodeOperationError(
 			context.getNode(),
 			`The query parameter "${name}" is required for ${operation.method} ${operation.path}`,

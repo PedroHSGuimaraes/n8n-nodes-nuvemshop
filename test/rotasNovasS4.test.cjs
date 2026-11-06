@@ -103,4 +103,36 @@ describe('S4 Remoções em massa com confirmação', () => {
 		assert.equal(context.requests[0].url, '/promotions');
 		assert.equal(context.requests[0].body, undefined);
 	});
+
+	it('deleteIntegration com events só de vírgulas e espaços falha antes da requisição', async () => {
+		for (const events of [' , ', ',', ' ,  , ']) {
+			const context = executeContext(2, {
+				domain: 'payments',
+				filters: { events },
+				confirmDeleteIntegration: true,
+			});
+			await assert.rejects(
+				executeDefinedOperation.call(
+					context,
+					findOperation('businessRule', 'deleteIntegration'),
+					0,
+				),
+				(error) => error.name === 'NodeOperationError',
+				JSON.stringify(events),
+			);
+			assert.equal(context.requests.length, 0, JSON.stringify(events));
+		}
+	});
+
+	it('só o booleano verdadeiro libera a remoção em massa', async () => {
+		for (const valor of ['true', 1, 'false', null, undefined]) {
+			const context = executeContext(2, { confirmDeleteAllPromotions: valor });
+			await assert.rejects(
+				executeDefinedOperation.call(context, findOperation('discount', 'deleteAllPromotions'), 0),
+				(error) => error.name === 'NodeOperationError',
+				String(valor),
+			);
+			assert.equal(context.requests.length, 0, String(valor));
+		}
+	});
 });
