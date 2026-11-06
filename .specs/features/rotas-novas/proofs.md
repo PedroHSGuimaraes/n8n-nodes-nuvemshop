@@ -1,7 +1,7 @@
 # rotas-novas proofs
 
-**HEAD**: 045ea72
-**Tree**: dirty - test/fixtures/v1-parameters.json, test/fixtures/v2-parameters-1.2.0.json
+**HEAD**: de4ec28
+**Tree**: clean
 **Shell**: /bin/sh
 **Result**: 39 pass, 0 fail
 
@@ -52,13 +52,13 @@
 `Run unit` - exit 0
 
 ```
-  ✔ preserves non-empty legacy array bodies and rejects the wrong body shape (0.418532ms)
-  ✔ rejects an empty required body before making the API request (0.317661ms)
-✔ Nuvem Shop guided request fields (6.375019ms)
+  ✔ preserves non-empty legacy array bodies and rejects the wrong body shape (0.395405ms)
+  ✔ rejects an empty required body before making the API request (16.815054ms)
+✔ Nuvem Shop guided request fields (31.521158ms)
 ▶ Nuvem Shop dynamic selectors
-  ✔ does not request variants while the parent product is an unresolved expression (0.270119ms)
-  ✔ adds IDs to dynamic option labels so duplicate names stay distinguishable (0.468815ms)
-✔ Nuvem Shop dynamic selectors (0.883627ms)
+  ✔ does not request variants while the parent product is an unresolved expression (0.479103ms)
+  ✔ adds IDs to dynamic option labels so duplicate names stay distinguishable (0.720372ms)
+✔ Nuvem Shop dynamic selectors (1.501963ms)
 ℹ tests 110
 ℹ suites 22
 ℹ pass 110
@@ -66,7 +66,7 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 5417.382848
+ℹ duration_ms 5960.183355
 ```
 
 `rm -rf /tmp/ns-lint && mkdir /tmp/ns-lint && git archive HEAD / tar -x -C /tmp/ns-lint && ln -s "$PWD/node_mod` - exit 0
