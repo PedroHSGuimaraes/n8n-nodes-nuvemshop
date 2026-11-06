@@ -196,10 +196,36 @@ describe('S3 Recurso Price Table', () => {
 			);
 			return pedidos;
 		};
-		assert.deepEqual(await sequencia('getMany', 25), [10, 10, 5]);
+		// O per_page fica igual em todas as páginas: a API pagina pelo número da página, e uma última
+		// página menor (page=3&per_page=5) repetiria os itens 11 a 15 (achado F1 da revisão).
+		assert.deepEqual(await sequencia('getMany', 25), [10, 10, 10]);
 		assert.deepEqual(await sequencia('getMany', 3), [3]);
-		assert.deepEqual(await sequencia('getByCustomer', 15), [10, 5]);
-		assert.deepEqual(await sequencia('getCustomers', 75), [50, 25]);
+		assert.deepEqual(await sequencia('getByCustomer', 15), [10, 10]);
+		assert.deepEqual(await sequencia('getCustomers', 75), [50, 50]);
+	});
+
+	it('paginação sem Return All devolve os itens 1 a N, sem repetir nem perder', async () => {
+		// API simulada de 60 itens que respeita page e per_page, como a Nuvemshop.
+		const dados = Array.from({ length: 60 }, (_unused, index) => ({ id: index + 1 }));
+		const responder = async (options) => {
+			const { page, per_page: porPagina } = options.qs;
+			return dados.slice((page - 1) * porPagina, page * porPagina);
+		};
+		for (const [operacao, limit] of [
+			['getMany', 25],
+			['getMany', 15],
+			['getCustomers', 75],
+		]) {
+			const { result } = await run(
+				'priceTable',
+				operacao,
+				{ priceTableId: '1', customerId: '9', returnAll: false, limit },
+				responder,
+			);
+			const ids = result.map((item) => item.json?.id ?? item.id);
+			const esperado = dados.slice(0, Math.min(limit, 60)).map((item) => item.id);
+			assert.deepEqual(ids, esperado, `${operacao} com limit ${limit}`);
+		}
 	});
 
 	it('create e update de priceTable exigem name e default_discount antes de pedir à API', async () => {

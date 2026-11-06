@@ -221,8 +221,13 @@ export async function nuvemShopApiRequestAllItems(
 		pageCount += 1;
 		// O teto da operação (10 ou 50 nas Price Tables) vale no lugar dos 200 padrão da API.
 		const pageLimit = config.maxPageSize ?? 200;
-		const remaining = Number.isFinite(maxItems) ? maxItems - returnData.length : pageLimit;
-		const pageSize = Math.max(1, Math.min(pageLimit, remaining));
+		// O per_page fica igual em todas as páginas: a API pagina pelo número da página, e uma última
+		// página menor (page=3&per_page=5) devolveria de novo itens já lidos. O `slice` final corta
+		// o excesso. Com limite menor que o teto, uma página só já basta.
+		const pageSize = Math.max(
+			1,
+			Math.min(pageLimit, Number.isFinite(maxItems) ? maxItems : pageLimit),
+		);
 		query.page = page;
 		query.per_page = pageSize;
 
