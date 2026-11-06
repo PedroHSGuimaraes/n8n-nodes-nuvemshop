@@ -11,3 +11,5 @@ coverage/
 .claude/
 .mcp.json
 CLAUDE.md
+
+.codegraph/

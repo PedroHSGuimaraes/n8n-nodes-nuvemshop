@@ -458,26 +458,130 @@ function fieldType(value: unknown): {
 	return { type: 'string', defaultValue: '', kind: 'direct' };
 }
 
+// Datas de cupom que a doc descreve sem hora (ex.: start_date "2014-05-08"); só o dia é enviado.
+const COUPON_DATE_FIELDS = new Set([
+	'min_start_date',
+	'min_end_date',
+	'max_start_date',
+	'max_end_date',
+]);
+
+// Campos de filtro que a versão 2 mostra como seletor de data: created/updated_at_min/max e cupom.
+function isDateField(apiName: string): boolean {
+	return /_at_(min|max)$/.test(apiName) || COUPON_DATE_FIELDS.has(apiName);
+}
+
+// ISO 8601 aceito: data sozinha, ou data e hora com segundos, fração e fuso opcionais.
+const ISO_8601 = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})?)?$/;
+
+// Confere o formato ISO 8601 e também o calendário: "2026-02-30" e hora 24 passam na regex,
+// mas não existem. O dia volta pelo UTC e precisa ser o mesmo que veio no texto.
+function isRealIsoDate(text: string): boolean {
+	if (!ISO_8601.test(text)) return false;
+	const [year, month, day] = text.slice(0, 10).split('-').map(Number);
+	const date = new Date(Date.UTC(year, month - 1, day));
+	const sameDay =
+		date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+	// Hora, minuto e segundo precisam estar na faixa do relógio; segundo 60 (salto) também recusa.
+	const clock = text.length > 10 ? text.slice(11).match(/^(\d{2}):(\d{2})(?::(\d{2}))?/) : null;
+	const clockOk =
+		!clock || (Number(clock[1]) <= 23 && Number(clock[2]) <= 59 && Number(clock[3] ?? 0) <= 59);
+	// O fuso "+HH:MM" segue a mesma regra: hora até 23 e minuto até 59.
+	const zone = text.match(/[+-](\d{2}):(\d{2})$/);
+	const zoneOk = !zone || (Number(zone[1]) <= 23 && Number(zone[2]) <= 59);
+	return sameDay && clockOk && zoneOk;
+}
+
+// Rotas de variante com corpo objeto: criar (POST) e atualizar (PUT) uma variante.
+// O PUT/PATCH em lote recebe array e continua com o JSON.
+export function hasVariantValues(operation: NuvemShopOperationDefinition): boolean {
+	return (
+		/^\/products\/\{product_id\}\/variants(\/\{id\})?$/.test(operation.path) &&
+		['POST', 'PUT'].includes(operation.method) &&
+		!!operation.body &&
+		!Array.isArray(parsedExample(operation.body))
+	);
+}
+
+// Idiomas aceitos nas linhas de Values, os mesmos do Content Language do node.
+const VARIANT_LANGUAGES: FieldOption[] = [
+	{ name: 'Português', value: 'pt' },
+	{ name: 'Português (Brasil)', value: 'pt_BR' },
+	{ name: 'Español', value: 'es' },
+	{ name: 'Español (Argentina)', value: 'es_AR' },
+	{ name: 'English', value: 'en' },
+];
+
+// Propriedade da versão 2 que substitui o JSON cru `values` da variante por linhas de idioma e texto.
+export function variantValuesProperty(
+	displayOptions: INodeProperties['displayOptions'],
+): INodeProperties {
+	return {
+		displayName: 'Values',
+		name: 'variantValues',
+		type: 'fixedCollection',
+		typeOptions: { multipleValues: true },
+		placeholder: 'Add Value',
+		default: {},
+		options: [
+			{
+				name: 'values',
+				displayName: 'Value',
+				values: [
+					{
+						displayName: 'Language',
+						name: 'language',
+						type: 'options',
+						options: VARIANT_LANGUAGES,
+						default: 'pt',
+						description: 'Language key of this attribute value',
+					},
+					{
+						displayName: 'Text',
+						name: 'text',
+						type: 'string',
+						default: '',
+						description:
+							'Attribute value of the variant in the chosen language, for example Large. Add one row per product attribute, in the same order as the attributes.',
+					},
+				],
+			},
+		],
+		displayOptions,
+		description:
+			'One value for each product attribute, in the same order. The combination must be unique among the product variants.',
+	};
+}
+
 function guidedFields(
 	operation: NuvemShopOperationDefinition,
 	input: NuvemShopJsonInput,
+	version = 1,
 ): GuidedField[] {
 	const example = parsedExample(input);
 	if (example === null || typeof example !== 'object' || Array.isArray(example)) return [];
 
-	return Object.entries(example).map(([apiName, value]) => {
+	const fields = Object.entries(example).map(([apiName, value]) => {
 		const inferred = fieldType(value);
 		const selection = queryFieldOptions(operation, apiName, value, input === operation.query);
 		const options = selection?.options;
 		const loadedOptions = FIELD_LOAD_OPTIONS[`${operationKey(operation)}:${apiName}`];
 		const loadOptionsMethod = loadedOptions?.method;
 		const multiple = selection?.multiple || loadedOptions?.multiple;
+		// Só o filtro de consulta da versão 2 vira seletor de data; a versão 1 segue em texto.
+		const isDate = version >= 2 && input === operation.query && isDateField(apiName);
 		const property: INodeProperties = {
 			displayName: loadOptionsMethod
 				? displayName(apiName).replace(/ ID$/, ' Name or ID')
 				: displayName(apiName),
 			name: camelCase(apiName),
-			type: multiple ? 'multiOptions' : options || loadOptionsMethod ? 'options' : inferred.type,
+			type: multiple
+				? 'multiOptions'
+				: options || loadOptionsMethod
+					? 'options'
+					: isDate
+						? 'dateTime'
+						: inferred.type,
 			typeOptions: loadOptionsMethod ? { loadOptionsMethod } : undefined,
 			options,
 			default: multiple
@@ -496,14 +600,20 @@ function guidedFields(
 			multiValueFormat: selection?.format ?? loadedOptions?.format,
 		};
 	});
+
+	// Na versão 2 o `values` da variante sai daqui e vira a coleção `variantValues`.
+	return fields.filter(
+		({ apiName }) => !(version >= 2 && apiName === 'values' && hasVariantValues(operation)),
+	);
 }
 
 export function guidedBodyProperties(
 	operation: NuvemShopOperationDefinition,
 	displayOptions: INodeProperties['displayOptions'],
+	version = 1,
 ): INodeProperties[] {
 	if (!operation.body) return [];
-	const fields = guidedFields(operation, operation.body);
+	const fields = guidedFields(operation, operation.body, version);
 	const requiredNames = new Set(REQUIRED_FIELDS[operationKey(operation)] ?? []);
 	const required = fields
 		.filter((field) => requiredNames.has(field.apiName))
@@ -571,9 +681,10 @@ export function guidedBodyProperties(
 export function guidedQueryProperties(
 	operation: NuvemShopOperationDefinition,
 	displayOptions: INodeProperties['displayOptions'],
+	version = 1,
 ): INodeProperties[] {
 	if (!operation.query) return [];
-	const fields = guidedFields(operation, operation.query);
+	const fields = guidedFields(operation, operation.query, version);
 	if (!fields.length) return [];
 	return [
 		{
@@ -618,12 +729,35 @@ function parseJsonField(
 	return parsed;
 }
 
+// Valida o seletor de data da versão 2 e devolve o texto que a API espera.
+// A data segue como veio (sem acrescentar fuso, AD-011); só as datas de cupom perdem a hora.
+function dateApiValue(
+	context: IExecuteFunctions,
+	value: unknown,
+	field: GuidedField,
+	itemIndex: number,
+): string {
+	const text = String(value).trim();
+	if (!isRealIsoDate(text)) {
+		throw new NodeOperationError(
+			context.getNode(),
+			`The "${field.property.displayName}" filter is not a valid date`,
+			{
+				itemIndex,
+				description: 'Pick a date from the calendar or use the format 2026-07-01T00:00:00Z',
+			},
+		);
+	}
+	return COUPON_DATE_FIELDS.has(field.apiName) ? text.slice(0, 10) : text;
+}
+
 function apiValue(
 	context: IExecuteFunctions,
 	value: unknown,
 	field: GuidedField,
 	itemIndex: number,
 ): unknown {
+	if (field.property.type === 'dateTime') return dateApiValue(context, value, field, itemIndex);
 	if (field.property.type === 'multiOptions' && Array.isArray(value)) {
 		if (field.multiValueFormat === 'array') {
 			if (Array.isArray(field.example) && field.example.every((item) => typeof item === 'number')) {
@@ -671,7 +805,9 @@ export function guidedValues(
 ): IDataObject {
 	const input = source === 'body' ? operation.body : operation.query;
 	if (!input) return {};
-	const fields = guidedFields(operation, input);
+	// A versão do node decide se os campos são os da v1 (texto) ou os da v2 (seletores).
+	const version = Number(context.getNode().typeVersion) || 1;
+	const fields = guidedFields(operation, input, version);
 	const requiredNames = new Set(
 		source === 'body' ? (REQUIRED_FIELDS[operationKey(operation)] ?? []) : [],
 	);
@@ -695,6 +831,24 @@ export function guidedValues(
 			continue;
 		}
 		values[field.apiName] = converted as IDataObject[string];
+	}
+
+	// Versão 2: as linhas de idioma e texto viram o array `values` da variante, ex.: [{ "pt": "G" }].
+	if (source === 'body' && version >= 2 && hasVariantValues(operation)) {
+		const rows = (context.getNodeParameter('variantValues', itemIndex, {}) as IDataObject)
+			.values as IDataObject[] | undefined;
+		// Linha sem texto deslocaria os atributos seguintes (o 3º viraria o 2º): recusa em vez de pular.
+		if ((rows ?? []).some((row) => String(row.text ?? '').trim() === '')) {
+			throw new NodeOperationError(context.getNode(), 'A Values row has no text', {
+				itemIndex,
+				description:
+					'Fill the Text of every Values row or remove the empty row, so the attributes keep their order',
+			});
+		}
+		const variantValues = (rows ?? []).map((row) => ({
+			[String(row.language ?? 'pt')]: String(row.text).trim(),
+		}));
+		if (variantValues.length) values.values = variantValues;
 	}
 
 	return values;

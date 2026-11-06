@@ -14,8 +14,6 @@ import { nuvemShopApiCredentialTest } from '../NuvemShop/methods/credentialTest'
 import { nuvemShopApiRequest } from '../NuvemShop/transport';
 import { NUVEMSHOP_WEBHOOK_EVENTS } from '../shared/webhookEvents';
 
-/* eslint-disable @n8n/community-nodes/node-usable-as-tool -- Trigger nodes cannot be AI tools. */
-
 interface RegisteredWebhook {
 	id: string;
 	event: string;

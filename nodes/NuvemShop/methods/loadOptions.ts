@@ -1,8 +1,10 @@
 import type { IDataObject, ILoadOptionsFunctions, INodePropertyOptions } from 'n8n-workflow';
 
+import { readIdValue } from '../helpers/resourceLocator';
 import { nuvemShopApiRequestAllItems } from '../transport';
 
-function translatedText(value: unknown): string {
+// Exportada para o listSearch reaproveitar a mesma regra de nome traduzido (pt, pt_BR, es...).
+export function translatedText(value: unknown): string {
 	if (typeof value === 'string') return value;
 	if (value === null || typeof value !== 'object' || Array.isArray(value)) return '';
 	const translations = value as Record<string, unknown>;
@@ -95,9 +97,10 @@ export const loadOptions = {
 	},
 
 	async getProductVariants(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-		const productId = String(
-			this.getCurrentNodeParameter('product_id') ?? this.getCurrentNodeParameter('productId') ?? '',
-		).trim();
+		// O produto pode vir como texto (versão 1) ou como Resource Locator (versão 2).
+		const productId = readIdValue(
+			this.getCurrentNodeParameter('product_id') ?? this.getCurrentNodeParameter('productId'),
+		);
 		if (!/^\d+$/.test(productId)) return [];
 		const items = await loadCollection(
 			this,

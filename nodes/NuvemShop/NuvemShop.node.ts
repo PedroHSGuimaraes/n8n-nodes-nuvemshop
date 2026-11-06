@@ -15,6 +15,7 @@ import {
 	resourceProperties,
 } from './actions';
 import { nuvemShopApiCredentialTest } from './methods/credentialTest';
+import { listSearch } from './methods/listSearch';
 import { loadOptions } from './methods/loadOptions';
 
 function isPreparedExecutionData(value: unknown): value is INodeExecutionData {
@@ -41,7 +42,8 @@ export class NuvemShop implements INodeType {
 		name: 'nuvemShop',
 		icon: { light: 'file:nuvemshop.png', dark: 'file:nuvemshop.dark.png' },
 		group: ['transform'],
-		version: 1,
+		version: [1, 2],
+		defaultVersion: 2,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description:
 			'Read and manage Nuvemshop store data through explicit resource operations. Use one node per AI tool and expose only the selected operation. IDs must come from matching read or create operations and must never be invented. Keep destructive, financial, inventory, fulfillment, and publication actions behind human approval.',
@@ -71,7 +73,7 @@ export class NuvemShop implements INodeType {
 		],
 	};
 
-	methods = { loadOptions, credentialTest: { nuvemShopApiCredentialTest } };
+	methods = { loadOptions, listSearch, credentialTest: { nuvemShopApiCredentialTest } };
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();

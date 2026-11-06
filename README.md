@@ -6,25 +6,28 @@ Node comunitário do n8n para integrar **Nuvemshop** e **Tiendanube**. Inclui um
 [![npm downloads](https://img.shields.io/npm/dm/n8n-nodes-nuvemshop.svg)](https://www.npmjs.com/package/n8n-nodes-nuvemshop)
 [![CI](https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop/actions/workflows/ci.yml/badge.svg)](https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/n8n-nodes-nuvemshop.svg)](LICENSE.md)
+[![Apoie no Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-Apoie_o_projeto-FFDD00?logo=buy-me-a-coffee&logoColor=000000)](https://buymeacoffee.com/qTny0AzFXS)
 
 ## 🧭 Navegação
 
 - [Funcionalidades](#-funcionalidades)
 - [Instalação](#-instalação)
 - [Credenciais](#-credenciais)
-- [Nós e operações](#-nós-e-operações)
+- [Nós e Operações](#-nós-e-operações)
 - [Preenchimento guiado](#-preenchimento-guiado)
 - [Exemplos](#-exemplos)
-- [Tool de IA](#-tool-de-ia)
-- [Webhook Trigger](#-webhook-trigger)
+- [Usar como Tool de Agente de IA](#-usar-como-tool-de-agente-de-ia)
+- [Trigger](#-trigger-webhook)
 - [Paginação e limites](#-paginação-e-limites)
 - [Custom API Call](#-custom-api-call)
 - [Solução de problemas](#-solução-de-problemas)
 - [Desenvolvimento](#-desenvolvimento)
 - [Compatibilidade](#-compatibilidade)
 - [Recursos](#-recursos)
+- [Publicação](#-publicação)
 - [Versões](#-versões)
 - [Suporte](#-suporte)
+- [Apoie o projeto](#-apoie-o-projeto)
 - [Licença](#-licença)
 
 ## ✨ Funcionalidades
@@ -33,7 +36,9 @@ Node comunitário do n8n para integrar **Nuvemshop** e **Tiendanube**. Inclui um
 - Campos guiados e tipados para payloads e filtros comuns.
 - Campos obrigatórios visíveis nas operações principais.
 - JSON avançado opcional para contratos completos e recursos novos.
-- Dropdowns dinâmicos para produtos, variantes, categorias, clientes, cupons, pedidos, locais e webhooks.
+- **Lista pesquisável e paginada** (node versão 2) para produto, categoria, pedido, cliente e cupom, com a opção de colar o ID.
+- Dropdowns dinâmicos para variantes, locais e webhooks.
+- Seletor de data nos filtros e lista de idioma e texto nos valores de variante (node versão 2).
 - Defaults seguros: operações de leitura são selecionadas antes de mutações.
 - API estável `2025-03`, rotas legadas `v1` e operações `unstable` documentadas.
 - Regiões Brasil/Nuvemshop e internacional/Tiendanube.
@@ -97,7 +102,7 @@ Crie uma credencial **Nuvem Shop API** e escolha o tipo conforme o fluxo:
 
 Solicite apenas os escopos usados pelo workflow. Tokens, IDs da loja e segredos ficam na credencial criptografada e nunca devem ser colocados em Body, Query ou `$fromAI()`.
 
-## 🧩 Nós e operações
+## 🧩 Nós e Operações
 
 O pacote instala:
 
@@ -142,6 +147,16 @@ Valores multilíngues simples usam o idioma escolhido em **Content Language** (`
 
 Arrays simples, como IDs de categorias, podem ser informados separados por vírgula. Objetos complexos, variantes, imagens e produtos de um pedido usam um campo JSON dedicado com exemplo visível.
 
+### Node versão 2: listas e datas
+
+Em node novo (versão 2), o node mostra no editor:
+
+- **Produto, categoria, pedido, cliente e cupom** como lista pesquisável. Digite parte do nome, do número do pedido, do e-mail ou do código do cupom; a lista busca uma página por vez e carrega mais ao rolar. Troque para **By ID** para colar um ID de outra etapa do workflow.
+- **Filtros de data** (`created_at_min`, `updated_at_max` e os demais, mais as datas de cupom) como seletor de data. O valor segue em ISO 8601; datas de cupom seguem como `AAAA-MM-DD`.
+- **Values de variante** como linhas de idioma e texto.
+
+Workflows salvos continuam na versão 1, com os mesmos campos de antes. Local, variante e webhook seguem como dropdown nas duas versões.
+
 ## 🚀 Exemplos
 
 ### Criar um produto
@@ -180,7 +195,7 @@ Exemplo do campo Variants:
 3. Consulte **Order → Get** antes da alteração.
 4. Use Update, Cancel, Close ou Edit somente com validação do estado atual.
 
-## 🤖 Tool de IA
+## 🤖 Usar como Tool de Agente de IA
 
 O node de ações define `usableAsTool: true`. Não existe um node Tool separado.
 
@@ -224,7 +239,7 @@ Boas práticas:
 - Este node não impõe aprovação automaticamente. Adicione uma etapa externa de revisão humana antes de Delete, Cancel, pagamentos, disputas, estoque, preço, fulfillment e publicação.
 - O **Nuvem Shop Trigger** não é uma Tool; triggers não podem ser conectados ao AI Agent.
 
-## 🪝 Webhook Trigger
+## 🪝 Trigger (Webhook)
 
 O **Nuvem Shop Trigger** registra webhooks ao ativar o workflow e remove os registros ao desativá-lo.
 
@@ -309,8 +324,13 @@ Use `npm run dev` para carregar o node em uma instância local do n8n.
 - [Tools Agent](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.agent/tools-agent)
 - [`$fromAI()`](https://docs.n8n.io/advanced-ai/examples/using-the-fromai-function/)
 
+## 🚀 Publicação
+
+A tag `vX.Y.Z` (ou o `workflow_dispatch`) dispara o workflow `publish.yml`, que roda lint, testes e build e envia a versão com `npx -y npm@12.2.2 stage publish --provenance --access public`. A versão **fica em espera**: ela só vai ao ar depois que o dono a aprova, com 2FA, na aba **Staged Packages** do npmjs.com. Sem a aprovação, nada muda no registro.
+
 ## 📈 Versões
 
+- **1.2.0** — **Listas pesquisáveis e datas guiadas.** Em node novo (versão 2), produto, categoria, pedido, cliente e cupom viram lista pesquisável e paginada com a opção de colar o ID; os filtros de data viram seletor; os valores de variante viram linhas de idioma e texto. Toda chamada passa a ter timeout de 30 s. Migração para o `@n8n/node-cli` 0.55.5, `n8n-workflow` 2.46 e publicação por fila de aprovação. Workflows salvos continuam na versão 1 e não mudam.
 - **1.1.0** — campos guiados, filtros, dropdowns ampliados, defaults seguros e documentação pt-BR otimizada para AI Tools.
 - **1.0.0** — primeira versão pública com 198 operações, paginação, Partner Actions, Custom API Call e Trigger HMAC.
 
@@ -322,6 +342,10 @@ Consulte o [CHANGELOG](CHANGELOG.md) para detalhes técnicos.
 2. Execute a operação Get antes de mutações para validar IDs e estado.
 3. Consulte os logs do n8n e a mensagem retornada pela API.
 4. Abra uma [issue no GitHub](https://github.com/PedroHSGuimaraes/n8n-nodes-nuvemshop/issues) com versão do n8n, operação e erro sem incluir tokens.
+
+## ☕ Apoie o projeto
+
+Este node é mantido de forma independente. Se ele ajuda suas automações, você pode apoiar o desenvolvimento, a manutenção e as novas integrações pelo [Buy Me a Coffee](https://buymeacoffee.com/qTny0AzFXS).
 
 ## 📄 Licença
 
