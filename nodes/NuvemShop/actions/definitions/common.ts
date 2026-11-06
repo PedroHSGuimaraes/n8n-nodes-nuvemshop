@@ -47,6 +47,8 @@ interface CrudOperationConfig {
 	basePath: string;
 	idParameter: NuvemShopPathParameter;
 	createExample: string;
+	// Texto próprio do Create quando o genérico não explica uma regra do recurso (ex.: estoque do pedido).
+	createDescription?: string;
 	updateExample?: string;
 	listQueryDescription?: string;
 	listQueryExample?: string;
@@ -73,7 +75,9 @@ export function standardCrudOperations(
 			name: 'Create',
 			value: 'create',
 			action: `Create a ${config.resourceName}`,
-			description: `Create one ${config.resourceName} in the connected Nuvemshop account. This changes store data and returns the newly created record, including its server-generated ID. Validate required fields and monetary values before calling it.`,
+			description:
+				config.createDescription ??
+				`Create one ${config.resourceName} in the connected Nuvemshop account. This changes store data and returns the newly created record, including its server-generated ID. Validate required fields and monetary values before calling it.`,
 			method: 'POST',
 			path: config.basePath,
 			scope,
