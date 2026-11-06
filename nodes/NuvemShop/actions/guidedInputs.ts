@@ -35,6 +35,9 @@ const REQUIRED_FIELDS: Record<string, string[]> = {
 		'products',
 	],
 	'POST /products': ['name'],
+	// Price Table: a doc exige name e default_discount na criação e na troca (400 sem eles).
+	'POST /products/price-tables': ['name', 'default_discount'],
+	'PUT /products/price-tables/{priceTableId}': ['name', 'default_discount'],
 };
 
 const FIELD_LOAD_OPTIONS: Record<
@@ -126,6 +129,11 @@ const FIELD_OPTIONS: Record<string, FieldOption[]> = {
 		{ name: 'Unfulfilled', value: 'unfulfilled' },
 		{ name: 'Fulfilled', value: 'fulfilled' },
 	],
+	// Comportamento de estoque da criação do pedido (doc order.md, Inventory Behaviour).
+	'POST /orders:inventory_behaviour': [
+		{ name: 'Bypass (Do Not Claim Stock)', value: 'bypass' },
+		{ name: 'Claim (Reserve Stock)', value: 'claim' },
+	],
 	'POST /orders:shipping_pickup_type': [
 		{ name: 'Ship', value: 'ship' },
 		{ name: 'Pickup', value: 'pickup' },
@@ -143,6 +151,8 @@ const FIELD_OPTIONS: Record<string, FieldOption[]> = {
 	],
 	'PATCH /orders/{order_id}/fulfillment-orders/{fulfillment_order_id}:status': [
 		{ name: 'Unpacked', value: 'UNPACKED' },
+		// IN_PREPARATION é opcional e atribuído à mão: a doc deixa pular direto de UNPACKED a PACKED.
+		{ name: 'In Preparation', value: 'IN_PREPARATION' },
 		{ name: 'Packed', value: 'PACKED' },
 		{ name: 'Dispatched', value: 'DISPATCHED' },
 		{ name: 'Ready for Pickup', value: 'READY_FOR_PICKUP' },

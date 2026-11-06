@@ -40,6 +40,49 @@ function resolvePath(
 	});
 }
 
+// Recusa a operação destrutiva cujo booleano de confirmação está desligado (padrão).
+function assertConfirmed(
+	context: IExecuteFunctions,
+	operation: NuvemShopOperationDefinition,
+	itemIndex: number,
+): void {
+	const confirmation = operation.confirmation;
+	// Operação sem trava de confirmação segue direto.
+	if (!confirmation) return;
+	// Só o booleano verdadeiro libera; ausente ou falso recusa.
+	if (context.getNodeParameter(confirmation.name, itemIndex, false) === true) return;
+	throw new NodeOperationError(
+		context.getNode(),
+		`"${confirmation.displayName}" is off, so no request was sent`,
+		{
+			itemIndex,
+			description: `Turn on "${confirmation.displayName}" to confirm that you want to run ${operation.name} (${operation.method} ${operation.path})`,
+		},
+	);
+}
+
+// Confere que cada filtro obrigatório da query tem valor. Texto em branco e lista só de vírgulas
+// (" , ") contam como ausentes: a API receberia `events= , ` e responderia erro.
+function assertRequiredQuery(
+	context: IExecuteFunctions,
+	operation: NuvemShopOperationDefinition,
+	query: IDataObject,
+	itemIndex: number,
+): void {
+	for (const name of operation.requiredQuery ?? []) {
+		// Separa por vírgula e exige ao menos um item com texto.
+		const hasValue = String(query[name] ?? '')
+			.split(',')
+			.some((item) => item.trim());
+		if (hasValue) continue;
+		throw new NodeOperationError(
+			context.getNode(),
+			`The query parameter "${name}" is required for ${operation.method} ${operation.path}`,
+			{ itemIndex, description: `Fill "${name}" in Filters or in Additional Query Parameters` },
+		);
+	}
+}
+
 function assertRelativeEndpoint(
 	context: IExecuteFunctions,
 	endpoint: string,
@@ -158,6 +201,8 @@ export async function executeDefinedOperation(
 	operation: NuvemShopOperationDefinition,
 	itemIndex: number,
 ): Promise<unknown> {
+	// A confirmação vem antes de tudo: sem ela nenhuma requisição sai, nem para montar a rota.
+	assertConfirmed(this, operation, itemIndex);
 	const endpoint = resolvePath(this, operation, itemIndex);
 	let body: IDataObject | IDataObject[] | FormData = {};
 
@@ -208,6 +253,9 @@ export async function executeDefinedOperation(
 			}
 		: {};
 
+	// Filtro obrigatório da API (ex.: `events` ao apagar integração) falta? Erro local, sem HTTP.
+	assertRequiredQuery(this, operation, query, itemIndex);
+
 	if (operation.paginated) {
 		if (body instanceof FormData) {
 			throw new NodeOperationError(
@@ -233,6 +281,8 @@ export async function executeDefinedOperation(
 			{
 				scope: operation.scope,
 				apiVersion: operation.apiVersion,
+				// Repassa o teto de `per_page` da operação; sem ele a paginação usa 200.
+				maxPageSize: operation.pageSize,
 			},
 		);
 	}

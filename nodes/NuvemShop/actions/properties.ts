@@ -198,6 +198,18 @@ function operationFields(
 		});
 	}
 
+	// Operação destrutiva: o booleano de confirmação nasce desligado e a descrição abre com "Warning:".
+	if (operation.confirmation) {
+		properties.push({
+			displayName: operation.confirmation.displayName,
+			name: operation.confirmation.name,
+			type: 'boolean',
+			default: false,
+			displayOptions,
+			description: operation.confirmation.description,
+		});
+	}
+
 	if (operation.paginated) {
 		properties.push(
 			{

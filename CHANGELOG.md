@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## 1.3.0 - 2026-11-06
+
+- Added the Price Table resource with 17 operations: price tables, category and variant exceptions, customers, approval, and the price tables of a customer. The table and the customer are searchable lists in node version 2.
+- Added 13 webhook events to the Trigger and to Webhook > Create: `app_subscription/updated`, `charge/created`, `charge/failed`, `charge/paid`, `checkout/created`, `checkout/updated`, `coupon/deleted`, `fulfillment_order/label_created`, `fulfillment_order/label_deleted`, `navigation/updated`, `order/in_fraud_analysis`, `order/in_preparation`, and `theme/updated`.
+- Added Discount > Delete All Promotions and Business Rule > Delete Integration. Each one has a confirmation switch that is off by default and fails before any request when it is off.
+- Added the `inventory_behaviour` field (`bypass` or `claim`) to Order > Create and documented the 422 stock error.
+- Added the `IN_PREPARATION` status to Fulfillment Order > Update.
+- Fixed Payment Option > Get Many, which called `/payment-options`; it now calls `/payment_providers/options` (scope `read_payments`).
+- Limited `per_page` to what each Price Table route accepts (10 or 50) through a per-operation page size.
+
 ## 1.2.0 - 2026-11-06
 
 - Added node version 2 (`version: [1, 2]`, default 2). Saved workflows keep node version 1 with the same parameters.

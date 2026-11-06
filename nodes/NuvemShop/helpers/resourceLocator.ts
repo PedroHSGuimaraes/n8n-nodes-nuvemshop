@@ -30,6 +30,12 @@ export const ID_KINDS: Record<string, IdKind> = {
 	'Order ID': { label: 'Order', indefinite: 'an order', searchMethod: 'searchOrders' },
 	'Customer ID': { label: 'Customer', indefinite: 'a customer', searchMethod: 'searchCustomers' },
 	'Coupon ID': { label: 'Coupon', indefinite: 'a coupon', searchMethod: 'searchCoupons' },
+	// Tabela de preço (recurso Price Table, plano rotas-novas): lista com 10 por página.
+	'Price Table ID': {
+		label: 'Price Table',
+		indefinite: 'a price table',
+		searchMethod: 'searchPriceTables',
+	},
 };
 
 /**

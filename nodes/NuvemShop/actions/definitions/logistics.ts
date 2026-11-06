@@ -248,7 +248,7 @@ const fulfillmentOrderOperations: NuvemShopOperationDefinition[] = [
 		value: 'update',
 		action: 'Update a fulfillment order',
 		description:
-			'Update status, tracking_info, destination, recipient, shipping, and/or assigned_location. Valid status workflow values are UNPACKED, PACKED, DISPATCHED, READY_FOR_PICKUP, and DELIVERED, subject to shipping type. Sent shipments cannot change destination, shipping, or recipient; packed/sent shipments cannot change assigned location. Prefer a delivered tracking event instead of directly setting DELIVERED so fulfilled_at uses the actual event time.',
+			'Update status, tracking_info, destination, recipient, shipping, and/or assigned_location. Valid status workflow values are UNPACKED, IN_PREPARATION, PACKED, DISPATCHED, READY_FOR_PICKUP, and DELIVERED, subject to shipping type. IN_PREPARATION is optional and set manually: it triggers no automatic transition, and a request may skip it when moving forward. Sent shipments cannot change destination, shipping, or recipient; packed/sent shipments cannot change assigned location. Prefer a delivered tracking event instead of directly setting DELIVERED so fulfilled_at uses the actual event time.',
 		method: 'PATCH',
 		path: '/orders/{order_id}/fulfillment-orders/{fulfillment_order_id}',
 		pathParameters: [orderId, fulfillmentOrderId],

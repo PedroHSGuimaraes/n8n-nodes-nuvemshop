@@ -5,6 +5,7 @@ import { commerceResources } from './definitions/commerce';
 import { contentResources } from './definitions/content';
 import { logisticsResources } from './definitions/logistics';
 import { platformResources } from './definitions/platform';
+import { priceTableResources } from './definitions/priceTable';
 import { customApiCallProperties, buildResourceProperties } from './properties';
 import type { NuvemShopOperationDefinition, NuvemShopResourceDefinition } from './types';
 
@@ -14,6 +15,7 @@ export const resourceDefinitions: NuvemShopResourceDefinition[] = [
 	...contentResources,
 	...logisticsResources,
 	...platformResources,
+	...priceTableResources,
 ].sort((left, right) => left.name.localeCompare(right.name));
 
 export const resourceOptions: INodePropertyOptions[] = [

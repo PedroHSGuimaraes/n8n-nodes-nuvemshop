@@ -53,8 +53,10 @@ describe('S5 documentação e lançamento', () => {
 
 	it('versão 1.2.0 e CHANGELOG com a seção 1.2.0', () => {
 		const pkg = JSON.parse(read('package.json'));
-		assert.equal(pkg.version, '1.2.0');
 		const changelog = read('CHANGELOG.md');
+		// A versão do pacote avança a cada lançamento: ela precisa ser a da entrada mais nova do
+		// CHANGELOG (a 1.3.0 é provada em rotasNovasS6), e a seção 1.2.0 segue no histórico.
+		assert.equal(pkg.version, changelog.split(/^## /m)[1].split(' ')[0]);
 		const section = changelog.split(/^## /m).find((part) => part.startsWith('1.2.0'));
 		assert.ok(section, 'CHANGELOG sem a seção ## 1.2.0');
 		// Os itens do plano: toolchain, versão 2, os cinco seletores, datas, variantes e timeout.
