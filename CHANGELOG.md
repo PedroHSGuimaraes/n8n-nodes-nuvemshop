@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here.
 
+## 1.2.0 - 2026-11-06
+
+- Added node version 2 (`version: [1, 2]`, default 2). Saved workflows keep node version 1 with the same parameters.
+- Turned the product, category, order, customer, and coupon IDs into searchable, paginated Resource Locator fields (From List and By ID) in node version 2.
+- Replaced the first-200-rows dropdown limit with a list that loads one page per request and keeps going while scrolling.
+- Turned the created/updated date filters and the coupon date filters into date pickers validated as ISO 8601 in node version 2.
+- Turned the product variant Values JSON into language and text rows in node version 2.
+- Added an explicit 30 second timeout to every API request.
+- Migrated to `@n8n/node-cli` 0.55.5 and `n8n-workflow` ^2.46.5, fixed the codex category, and removed the unused lint directive from the trigger.
+- Switched the publish workflow to `npm stage publish` with provenance, so each version waits for the owner's approval.
+- Completed the README and added the funding link.
+
 ## 1.1.2 - 2026-07-13
 
 - Replaced the abandoned-checkout coupon JSON input with a required Coupon Name-or-ID selector.
