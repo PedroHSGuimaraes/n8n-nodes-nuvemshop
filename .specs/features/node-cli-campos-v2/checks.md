@@ -149,7 +149,7 @@ Proof: run unit | ✔ versão 1.2.0 e CHANGELOG com a seção 1.2.0
 
 - **Settled mid-build:** none
 - **Dispatched:** none
-- **Boundary:** C1-C8 fechados em d02e2e9
+- **Boundary:** C1-C23 fechados em cea46f6 (C1-C8 em d02e2e9)
 - **Abandoned:** none
 - **Pós-merge (fora desta entrega):** a tag `v1.2.0`, a aprovação 2FA do dono na aba Staged Packages e o `npm view n8n-nodes-nuvemshop version` devolver 1.2.0 dependem do dono (AC S5.3); C7 prova o workflow
 - **Walked:** n/a - o node não tem tela própria; o editor do n8n renderiza as propriedades

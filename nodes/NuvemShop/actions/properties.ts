@@ -1,12 +1,31 @@
 import type { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 
 import { ID_KINDS } from '../helpers/resourceLocator';
-import { guidedBodyProperties, guidedQueryProperties } from './guidedInputs';
+import {
+	guidedBodyProperties,
+	guidedQueryProperties,
+	hasVariantValues,
+	variantValuesProperty,
+} from './guidedInputs';
 import type { NuvemShopOperationDefinition, NuvemShopResourceDefinition } from './types';
 
 function operationDisplay(resource: string, operation: string): Record<string, string[]> {
 	return { resource: [resource], operation: [operation] };
 }
+
+// Restringe uma propriedade a uma faixa de versões do node, mantendo o resto do displayOptions.
+function forVersions(
+	property: INodeProperties,
+	condition: Array<number | { _cnd: { gte: number } }>,
+): INodeProperties {
+	return {
+		...property,
+		displayOptions: { show: { ...property.displayOptions?.show, '@version': condition } },
+	};
+}
+
+const ONLY_V1 = [1];
+const FROM_V2 = [{ _cnd: { gte: 2 } }];
 
 function operationFields(
 	resource: NuvemShopResourceDefinition,
@@ -112,7 +131,19 @@ function operationFields(
 
 	if (operation.body && operation.scope !== 'authorization') {
 		const bodyIsArray = Array.isArray(JSON.parse(operation.body.example));
-		properties.push(...guidedBodyProperties(operation, displayOptions));
+		const bodyV1 = guidedBodyProperties(operation, displayOptions);
+		if (hasVariantValues(operation)) {
+			// Variante: a v2 troca o JSON cru de `values` por linhas de idioma e texto.
+			properties.push(
+				...bodyV1.map((property) => forVersions(property, ONLY_V1)),
+				...guidedBodyProperties(operation, displayOptions, 2).map((property) =>
+					forVersions(property, FROM_V2),
+				),
+				forVersions(variantValuesProperty(displayOptions), FROM_V2),
+			);
+		} else {
+			properties.push(...bodyV1);
+		}
 		if (bodyIsArray) {
 			properties.push({
 				displayName: 'Body (JSON) (Required)',
@@ -141,7 +172,22 @@ function operationFields(
 	}
 
 	if (operation.query) {
-		properties.push(...guidedQueryProperties(operation, displayOptions));
+		const queryV1 = guidedQueryProperties(operation, displayOptions);
+		const queryV2 = guidedQueryProperties(operation, displayOptions, 2);
+		// Só duplica o filtro quando a v2 muda algo (datas); o resto fica igual nas duas versões.
+		const hasDates = queryV2.some(
+			(property) =>
+				Array.isArray(property.options) &&
+				property.options.some((option) => 'type' in option && option.type === 'dateTime'),
+		);
+		if (hasDates) {
+			properties.push(
+				...queryV1.map((property) => forVersions(property, ONLY_V1)),
+				...queryV2.map((property) => forVersions(property, FROM_V2)),
+			);
+		} else {
+			properties.push(...queryV1);
+		}
 		properties.push({
 			displayName: 'Additional Query Parameters (JSON)',
 			name: 'query',
