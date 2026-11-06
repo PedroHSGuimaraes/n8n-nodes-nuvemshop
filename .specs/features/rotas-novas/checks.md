@@ -1,6 +1,6 @@
 # rotas-novas checks
 
-Build: `npm run build --silent`; `npx tsc --noEmit`; `npm run lint`
+Build: `npm run build --silent`; `npx tsc --noEmit`; `rm -rf /tmp/ns-lint && mkdir /tmp/ns-lint && git archive HEAD | tar -x -C /tmp/ns-lint && ln -s "$PWD/node_modules" /tmp/ns-lint/node_modules && cd /tmp/ns-lint && npx n8n-node lint`
 Run unit: `npm run build --silent && node --test --test-reporter=spec test/*.test.cjs`
 Plan: `.specs/features/rotas-novas/plan.md`
 
@@ -103,7 +103,7 @@ Proof: run unit | ✔ a versão é 1.3.0 e o CHANGELOG registra as rotas novas
 Proof: run unit | ✔ o README documenta Price Table, as remoções e a Tool de IA
 
 **C28** - `n8n-node lint` sai com 0 erros (AC 3)
-Proof: `npm run lint`
+Proof: `rm -rf /tmp/ns-lint && mkdir /tmp/ns-lint && git archive HEAD | tar -x -C /tmp/ns-lint && ln -s "$PWD/node_modules" /tmp/ns-lint/node_modules && cd /tmp/ns-lint && npx n8n-node lint`
 
 **C29** - O recurso `priceTable` entra no node que continua `usableAsTool` (AC 4)
 Proof: run unit | ✔ o node continua usableAsTool e inclui priceTable
@@ -112,9 +112,9 @@ Proof: run unit | ✔ o node continua usableAsTool e inclui priceTable
 
 | Set (size) | Member -> proof | Unproven |
 | --- | --- | --- |
-| eventos novos de webhook (13) | todos C4, C5, C6 · `checkout/updated` C7 | - |
+| eventos novos de webhook (13) | `app_subscription/updated` C4 · `charge/created` C4 · `charge/failed` C4 · `charge/paid` C4 · `checkout/created` C4 · `checkout/updated` C4 · `coupon/deleted` C4 · `fulfillment_order/label_created` C4 · `fulfillment_order/label_deleted` C4 · `navigation/updated` C4 · `order/in_fraud_analysis` C4 · `order/in_preparation` C4 · `theme/updated` C4 · dropdown C6 · `checkout/updated` C7 | - |
 | eventos de privacidade (3) | `store/redact` C8 · `customers/redact` C8 · `customers/data_request` C8 | - |
-| operações de `priceTable` (17) | todas C9 · `create` C10 · `addCustomers` C11, C15 · `deleteVariant` C16 · `getMany` C12 | - |
+| operações de `priceTable` (17) | `create` C9 · `get` C9 · `getMany` C9 · `update` C9 · `setCategories` C9 · `getCategory` C9 · `getCategories` C9 · `deleteCategory` C9 · `setVariants` C9 · `getVariant` C9 · `getVariants` C9 · `deleteVariant` C9 · `addCustomers` C9 · `approveCustomers` C9 · `getCustomers` C9 · `deleteCustomer` C9 · `getByCustomer` C9 · corpo C10, C11 · `deleteVariant` C16 · paginação C12 | - |
 | tamanhos de página (3) | 10 C12 · 50 C12 · 200 C12 | - |
 | parâmetros com Resource Locator (2) | `priceTableId` C13 · `customerId` C13 | - |
 | operações com confirmação (2) | `deleteAllPromotions` C17, C18, C21 · `deleteIntegration` C17, C18, C19, C20 | - |
@@ -122,8 +122,8 @@ Proof: run unit | ✔ o node continua usableAsTool e inclui priceTable
 | `POST /products/price-tables` statuses (2) | 201 C10 · 401 C10 | - |
 | `GET /products/price-tables` statuses (2) | 200 C12 · 401 C12 | - |
 | `PUT /products/price-tables/{id}` statuses (2) | 200 C9 · 401 C9 | - |
-| `.../categories` e `.../product-variants` statuses (2) | 204 C16 · 401 C16 | - |
-| `.../customers` statuses (3) | 204 C11 · 409 C15 · 401 C15 | - |
+| `/products/price-tables/{id}/categories` e `/products/price-tables/{id}/product-variants` statuses (2) | 204 C16 · 401 C16 | - |
+| `/products/price-tables/{id}/customers` statuses (3) | 204 C11 · 409 C15 · 401 C15 | - |
 | `DELETE /promotions` statuses (2) | 204 C21 · 401 C21 | - |
 | `DELETE /business_rules/integrations/{domain}` statuses (3) | 204 C19 · 401 C19 · 403 C19 | - |
 | portas de sentido único em Landing (4) | confirmação C17, C18 · pageSize C12 · nomes C9, C13 · versão C26 | - |
