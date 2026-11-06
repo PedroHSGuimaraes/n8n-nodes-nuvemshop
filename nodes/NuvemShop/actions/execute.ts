@@ -7,6 +7,7 @@ import type {
 import { NodeOperationError } from 'n8n-workflow';
 
 import { parseJsonBody, parseJsonObject } from '../helpers/json';
+import { emptyLocatorError, getIdParameter, ID_KINDS } from '../helpers/resourceLocator';
 import { buildMultipartForm } from '../helpers/multipart';
 import { nuvemShopApiRequest, nuvemShopApiRequestAllItems } from '../transport';
 import { guidedValues, validateRequiredBody } from './guidedInputs';
@@ -18,9 +19,17 @@ function resolvePath(
 	itemIndex: number,
 ): string {
 	return operation.path.replace(/\{([A-Za-z0-9_]+)\}/g, (_match, parameterName: string) => {
-		const rawValue = context.getNodeParameter(parameterName, itemIndex, '') as string | number;
-		const value = String(rawValue ?? '').trim();
+		// Texto na versão 1 e Resource Locator na versão 2 saem do mesmo helper como texto.
+		const value = getIdParameter(context, parameterName, itemIndex);
 		if (!value) {
+			// Na versão 2 os cinco IDs principais ganham a mensagem do Resource Locator vazio.
+			const displayName = operation.pathParameters?.find(
+				(parameter) => parameter.name === parameterName,
+			)?.displayName;
+			const kind = displayName ? ID_KINDS[displayName] : undefined;
+			if (kind && Number(context.getNode().typeVersion) >= 2) {
+				throw emptyLocatorError(context, kind, itemIndex);
+			}
 			throw new NodeOperationError(
 				context.getNode(),
 				`The path parameter "${parameterName}" is required for ${operation.method} ${operation.path}`,

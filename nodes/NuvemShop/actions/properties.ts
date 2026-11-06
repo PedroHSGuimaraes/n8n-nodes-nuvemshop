@@ -1,5 +1,6 @@
 import type { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 
+import { ID_KINDS } from '../helpers/resourceLocator';
 import { guidedBodyProperties, guidedQueryProperties } from './guidedInputs';
 import type { NuvemShopOperationDefinition, NuvemShopResourceDefinition } from './types';
 
@@ -41,7 +42,7 @@ function operationFields(
 			],
 		};
 		const options = staticOptions[`${operation.path}:${parameter.name}`];
-		properties.push({
+		const legacyProperty: INodeProperties = {
 			displayName: loadOptionsMethod
 				? parameter.displayName.replace(/ ID$/, ' Name or ID')
 				: parameter.displayName,
@@ -54,7 +55,45 @@ function operationFields(
 			placeholder: parameter.placeholder,
 			displayOptions,
 			description: parameter.description,
-		});
+		};
+
+		// Os cinco IDs principais viram Resource Locator na versão 2, com o mesmo `name` da versão 1
+		// (AD-002 e AD-009). A versão 1 guarda a propriedade antiga, só restrita a `@version` 1.
+		const kind = ID_KINDS[parameter.displayName];
+		if (!kind) {
+			properties.push(legacyProperty);
+			continue;
+		}
+		properties.push(
+			{
+				...legacyProperty,
+				displayOptions: { show: { ...displayOptions.show, '@version': [1] } },
+			},
+			{
+				displayName: kind.label,
+				name: parameter.name,
+				type: 'resourceLocator',
+				default: { mode: 'list', value: '' },
+				required: true,
+				modes: [
+					{
+						displayName: 'From List',
+						name: 'list',
+						type: 'list',
+						placeholder: `Select ${kind.indefinite}...`,
+						typeOptions: { searchListMethod: kind.searchMethod, searchable: true },
+					},
+					{
+						displayName: 'By ID',
+						name: 'id',
+						type: 'string',
+						placeholder: parameter.placeholder,
+					},
+				],
+				displayOptions: { show: { ...displayOptions.show, '@version': [{ _cnd: { gte: 2 } }] } },
+				description: parameter.description,
+			},
+		);
 	}
 
 	if (operation.scope === 'authorization') {

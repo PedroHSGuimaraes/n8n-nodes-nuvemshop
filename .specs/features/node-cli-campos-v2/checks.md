@@ -64,7 +64,7 @@ Proof: run unit | ✔ v2: orderId em modo list chama GET /orders/871254203
 **C15** - Na v2, orderId em modo id com espaços chama GET /orders/871254203 (AC 3)
 Proof: run unit | ✔ v2: orderId em modo id remove espaço nas pontas
 
-**C16** - Na v2, Resource Locator vazio lança NodeOperationError com a mensagem e a descrição do plano (AC 4)
+**C16** - Na v2, Resource Locator vazio lança NodeOperationError com a mensagem, a descrição do plano e itemIndex 0 (AC 4)
 Proof: run unit | ✔ v2: Resource Locator vazio lança NodeOperationError com descrição
 
 **C17** - listSearch de pedidos chama GET /orders com q, page 1 e per_page 50 e devolve nome com número e cliente (AC 5)
@@ -149,7 +149,7 @@ Proof: run unit | ✔ versão 1.2.0 e CHANGELOG com a seção 1.2.0
 
 - **Settled mid-build:** none
 - **Dispatched:** none
-- **Boundary:** nenhum check fechado ainda
+- **Boundary:** C1-C8 fechados em d02e2e9
 - **Abandoned:** none
 - **Pós-merge (fora desta entrega):** a tag `v1.2.0`, a aprovação 2FA do dono na aba Staged Packages e o `npm view n8n-nodes-nuvemshop version` devolver 1.2.0 dependem do dono (AC S5.3); C7 prova o workflow
 - **Walked:** n/a - o node não tem tela própria; o editor do n8n renderiza as propriedades
