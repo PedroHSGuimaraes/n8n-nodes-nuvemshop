@@ -139,6 +139,17 @@ O pedido aceita `inventory_behaviour` e a ordem de envio aceita `IN_PREPARATION`
 3. WHEN a pessoa escolhe o status `In Preparation` em `Fulfillment Order > Update` THEN o sistema SHALL enviar `status` `IN_PREPARATION` no PATCH da ordem de envio
 4. The operações de versão 1 e de versão 2 existentes SHALL manter nome e tipo de todo parâmetro (comparação das propriedades de `origin/main` contra a branch)
 
+### S6: Entrega da versão 1.3.0 (P2)
+
+O pacote sai com versão, histórico e README coerentes e com as verificações verdes.
+
+**Acceptance Criteria**
+
+1. The package.json SHALL ter `version` `1.3.0` e o CHANGELOG SHALL abrir com a entrada `## 1.3.0` que cita Price Table, os 13 eventos, as duas remoções com confirmação, `inventory_behaviour`, `IN_PREPARATION` e a correção do Payment Option
+2. The README SHALL documentar o recurso Price Table com a tabela das 17 operações, um exemplo, as duas remoções com a confirmação e a seção de Tool de IA com as operações novas
+3. WHEN `npm run lint` roda THEN `n8n-node lint` SHALL sair com código 0 e 0 erros
+4. The recurso `priceTable` SHALL manter `usableAsTool` ativo, como os demais recursos
+
 ## Out of scope
 
 | Excluded | Why |
