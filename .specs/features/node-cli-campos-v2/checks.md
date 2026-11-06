@@ -154,7 +154,7 @@ Proof: run unit | ✔ versão 1.2.0 e CHANGELOG com a seção 1.2.0
 ## Handoff
 
 - **Settled mid-build:** none
-- **Dispatched:** Verifier (sonnet) em eb0d23a, enviado
+- **Dispatched:** Verifier (sonnet) em eb0d23a, returned; achados fechados em b01d384 e ad35990
 - **Boundary:** C1-C30 fechados em bbf30da; C31-C32 neste commit
 - **Abandoned:** none
 - **Pós-merge (fora desta entrega):** a tag `v1.2.0`, a aprovação 2FA do dono na aba Staged Packages e o `npm view n8n-nodes-nuvemshop version` devolver 1.2.0 dependem do dono (AC S5.3); C7 prova o workflow

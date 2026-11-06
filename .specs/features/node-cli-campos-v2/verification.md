@@ -1,0 +1,57 @@
+# node-cli-campos-v2 verification
+
+**Verdict**: FAIL
+**Proofs**: `proofs.md` at ad35990
+**Verifier**: independent sub-agent (author != verifier)
+
+## Checks
+
+| Check | Test | Holds |
+| --- | --- | --- |
+| C1 | proof `n8n-node lint` em `git archive HEAD` (exit 0); `toolchain.test.cjs` `NuvemShop.node.json usa uma categoria aceita pelo lint` e `o trigger não carrega eslint-disable sem efeito` | yes - o lint real roda; os dois testes travam a causa dos dois achados antigos |
+| C2 | `toolchain.test.cjs` `package.json segue o template do node-cli 0.55.5` | yes |
+| C3 | `toolchain.test.cjs` `o lock resolve n8n-workflow em 2.46.x ou mais nova` + proof `npm audit --omit=dev` | yes |
+| C4 | `toolchain.test.cjs` `rota de loja usa httpRequestWithAuthentication com timeout de 30000` e `rota de parceiro (httpRequest direto) também leva timeout de 30000` | yes - multipart, binário e `nuvemShopApiRequestAllItems` não têm teste próprio, mas passam pelo mesmo objeto `options` |
+| C5 | `toolchain.test.cjs` `uma chamada que estoura o tempo vira NodeApiError` | yes - só assere `error.name`; vale para qualquer erro lançado, não prova o timeout em si (ver Findings) |
+| C6 | `toolchain.test.cjs` `o ci roda npm ci, lint, test e build em Pull Request` e `o publish usa a mesma node-version do ci` | yes |
+| C7 | `toolchain.test.cjs` `o publish envia o pacote para a fila stage com provenance` | yes - `RELEASE_MODE` e `NODE_AUTH_TOKEN` são conferidos no arquivo inteiro, não no passo; `id-token: write` não é conferido |
+| C8 | proof `npm test` (`node --test test/*.test.cjs`, `# fail 0`) | yes |
+| C9 | `resourceLocator.test.cjs` `v1: order get chama GET /orders/871254203 na base 2025-03` | yes |
+| C10 | `resourceLocator.test.cjs` `v1: created_at_min segue como texto sem mudança` | yes |
+| C11 | `resourceLocator.test.cjs` `v1: todo parâmetro da 1.1.3 mantém name e type` | yes - snapshot da 1.1.3; compara só `resource` e `operation` do `show` |
+| C12 | `resourceLocator.test.cjs` `o node declara version [1, 2] e defaultVersion 2` | yes |
+| C13 | `resourceLocator.test.cjs` `v2: IDs principais são resourceLocator com list pesquisável e id` | no - o laço parte de `ID_KINDS[parameter.displayName]`, igual ao código; os `id` de `/categories/{id}/custom-fields` e `/products/{id}/custom-fields` têm `displayName` em minúscula (`category ID`, `product ID`), ficam texto na v2 e o teste não os vê |
+| C14 | `resourceLocator.test.cjs` `v2: orderId em modo list chama GET /orders/871254203` | yes |
+| C15 | `resourceLocator.test.cjs` `v2: orderId em modo id remove espaço nas pontas` | yes |
+| C16 | `resourceLocator.test.cjs` `v2: Resource Locator vazio lança NodeOperationError com descrição` | yes - só `Order`; produto, categoria, cliente e cupom não têm caso (as sondas mostraram que `Product` funciona) |
+| C17 | `listSearch.test.cjs` `listSearch de pedidos chama GET /orders com q, page e per_page` | no - o critério fixa `fields` `id,number,contact_name` e o teste não assere `qs.fields` |
+| C18 | `listSearch.test.cjs` `listSearch de produtos e clientes busca uma página por chamada` | yes - `requests.length` 1; `qs.page` não é conferido |
+| C19 | `listSearch.test.cjs` `listSearch devolve paginationToken só com página cheia` | yes - 50, 49 e 0 itens, só em pedidos |
+| C20 | `listSearch.test.cjs` `listSearch de categorias filtra por contém sem acento até 5 páginas` | no - o critério manda devolver o `paginationToken` da próxima página; o caso dos 20 acertos não assere o token (esperado `"3"`), só o caso sem acerto assere `"6"` |
+| C21 | `listSearch.test.cjs` `listSearch de cupons usa q e mantém só código que contém o texto` | yes |
+| C22 | `resourceLocator.test.cjs` `v2: getProductVariants lê o product_id do Resource Locator` | yes |
+| C23 | `listSearch.test.cjs` `listSearch repassa 401 como NodeApiError` | yes - só `searchOrders` |
+| C24 | `dates.test.cjs` `v2: filtros de data são dateTime` | no - as chaves esperadas saem de uma regex copiada do código (`/_at_(min\|max)$/`); se a regra do código errar, o teste herda o erro |
+| C25 | `dates.test.cjs` `v2: data sem fuso segue como veio` | yes - só `created_at_min` |
+| C26 | `dates.test.cjs` `v2: data com fuso segue igual` | yes |
+| C27 | `dates.test.cjs` `v2: datas de cupom viram AAAA-MM-DD` | yes - só `min_start_date`, 1 das 4 |
+| C28 | `dates.test.cjs` `v2: data fora do ISO 8601 lança NodeOperationError` | no - só `'ontem'`; `2026-02-30` e `2026-04-31` passam como válidas no código (Findings, linha 1) |
+| C29 | `dates.test.cjs` `v2: Values de variante é fixedCollection` | yes |
+| C30 | `dates.test.cjs` `v2: Values de variante vira array de objetos por idioma` | no - só o caso feliz (duas linhas preenchidas); linha vazia no meio some e desloca os atributos (Findings, linha 2) |
+| C31 | `docs.test.cjs` `README tem as seções do padrão completo` | yes - confere títulos, não o conteúdo das seções |
+| C32 | `docs.test.cjs` `versão 1.2.0 e CHANGELOG com a seção 1.2.0` | yes - os termos `/date/i` e `/variant/i` casam em qualquer lugar da seção |
+| C33 | `dates.test.cjs` `v2: data impossível lança NodeOperationError sem chamar a API` | yes - assere os 3 valores da claim, `called === false` e `2028-02-29` aceita; sondas fora do teste: `2026-13-01`, `2026-00-10`, `2026-06-31T23:60:00`, `2025-02-29`, `2100-02-29`, `0000-01-01` e `min_start_date` `2026-02-30` são recusadas; `2000-02-29` passa. O teste não cobre o minuto 60 (apagar a checagem de minuto não o derruba) nem segundos e fuso (Findings, última linha) |
+| C34 | `dates.test.cjs` `v2: linha de Values sem texto lança NodeOperationError` | yes - linha vazia e `'   '` no meio, `called === false`; sondas: `'\t'`, `'\n'`, `'\u00a0'`, texto ausente e linha vazia no `update` lançam o erro; `' G '` vira `G`; `0` vira `"0"`; `'\u200b'` (espaço de largura zero) passa como texto |
+
+## Findings
+
+| Finding | Evidence | Fix | Closed |
+| --- | --- | --- | --- |
+| Data com dia que não existe passa como ISO 8601 válida e vai à API (`2026-02-30`, `2026-04-31`, `2026-07-01T24:00:00`, e `min_start_date` `2026-02-30`) | `nodes/NuvemShop/actions/guidedInputs.ts` `dateApiValue` (regex `ISO_8601` + `Date.parse`; o V8 aceita dia 30 de fevereiro); sonda no `dist` devolveu `qs.created_at_min` `2026-02-30`; C28 só testa `'ontem'` | validar mês, dia máximo do mês e hora 0-23 com cálculo próprio; acrescentar a C28 os casos `2026-02-30` e `2026-04-31` | b01d384 - C33 prova (isRealIsoDate recusa 2026-02-30, 2026-04-31 e hora 24) |
+| Linha de `Values` com texto vazio é descartada e os valores seguintes ocupam o lugar do atributo errado: `[G, "", Azul]` vira `[{"pt":"G"},{"pt":"Azul"}]`; texto só com espaços (`"   "`) segue como valor | `guidedInputs.ts` em `guidedValues`, bloco `variantValues` (`.filter((row) => String(row.text ?? '') !== '')`); a descrição do campo manda "one row per product attribute, in the same order" | lançar `NodeOperationError` quando uma linha tiver texto vazio ou só espaço (ou manter a posição) e testar o caso em C30 | b01d384 - C34 prova (linha sem texto lança NodeOperationError) |
+| Os `id` de `/categories/{id}/custom-fields`, `/categories/{id}/custom-fields/values`, `/products/{id}/custom-fields` e `/products/{id}/custom-fields/values` ficam texto na v2, contra "em todas as operações onde existem" (S3 AC 1) | `helpers/resourceLocator.ts` `ID_KINDS` chaveia por `displayName` exato (`Product ID`, `Category ID`); essas 4 operações usam `product ID` e `category ID` em minúscula; C13 usa o mesmo `ID_KINDS` e não as vê | casar `displayName` sem diferença de caixa, ou listar as 4 operações em `Out of scope` do plano; dar a C13 uma lista fixa de operações esperadas | b01d384 - C13 prova (idKindFor sem diferença de caixa; teste exige as 4 operações em minúscula) |
+| Divergência plano x código no `getIdParameter` | o plano (Shape, passo 3) diz que `getIdParameter` lança erro se vazio e que `loadOptions.getProductVariants` o chama; o código devolve `''` (`resourceLocator.ts` `getIdParameter`), o erro sai de `resolvePath` (`execute.ts`) e o `loadOptions` chama `readIdValue` | alinhar o plano ao código (leitura simples e erro separados) ou mover o erro para dentro do helper | b01d384 - plano alinhado: getIdParameter devolve texto, resolvePath lança, loadOptions usa readIdValue |
+| `paginationToken` inválido volta calado para a página 1: `"abc"`, `"0"`, `"-3"`, `"1.5"`, `"2abc"` leem `page` 1 | `methods/listSearch.ts` `pageFromToken`; o plano só fixa o formato do token válido | dizer o comportamento no plano ou lançar erro; acrescentar o caso a C19 | b01d384 - plano: Assumptions descreve token inválido lendo a página 1 (comportamento mantido de propósito) |
+| `searchCategories` devolve todos os acertos das páginas lidas, até 200 numa chamada (sonda: 200 resultados, 1 chamada), enquanto o plano diz "parar com 20 resultados" | `listSearch.ts` `searchCategories` só confere o limite entre páginas; C20 só cobre o caso de 20 acertos exatos | cortar a lista em 20 e guardar o token da posição, ou escrever no plano que o limite de 20 vale entre páginas | b01d384 - plano: limite de 20 vale ao fim da página; C20 assere o token "3" |
+| Asserções mais frouxas que o critério | C17 não assere `qs.fields`; C20 não assere o token do caso dos 20 acertos; C16 só cobre `Order`; C23 só cobre `searchOrders`; C5 assere só `error.name` e passa com qualquer `Error`; C7 não confere `id-token: write` nem prende `RELEASE_MODE` ao passo; C24 deriva as chaves da mesma regex do código; C25, C26 e C27 usam 1 campo de data (de 8 e de 4) | em `test/listSearch.test.cjs` assertar `request.qs.fields` (C17) e `found.paginationToken === '3'` (C20); repetir C16 e C23 nos cinco tipos; C24 com lista fixa de chaves | b01d384 - C17 assere fields, C20 assere token, C16 e C23 nos cinco tipos, C24 com lista fixa, C7 com id-token e RELEASE_MODE no passo; C5, C25 a C27 ficam: C5 prova NodeApiError por nome, C25 a C27 provam o caminho comum de data |
+| Data aceita segundos e fuso fora da faixa: `2026-06-30T23:59:60`, `2026-06-30T23:59:99` e `2026-06-30T10:00:00+99:99` vão à API como válidas; só dia, mês, hora e minuto são conferidos | `guidedInputs.ts` `isRealIsoDate` (hora e minuto, sem segundo nem offset); sonda `probe2.cjs` devolveu a data sem erro; C33 não nomeia esses valores | limitar segundo a 0-59 (60 só se o plano aceitar segundo bissexto) e o offset a `-14:00..+14:00`; acrescentar os casos a C33 | ad35990 - C33 prova (segundo e minuto até 59, fuso até 23:59; casos 23:59:60, 23:59:99, +99:99, +05:60 no teste) |
