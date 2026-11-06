@@ -115,7 +115,7 @@ const priceTableOperations: NuvemShopOperationDefinition[] = [
 		value: 'setCategories',
 		action: 'Add or update category exceptions in a price table',
 		description:
-			'Add or update one or more category discount exceptions in a price table. The body is a JSON array of objects with the category id and its discount percentage as a string. The API answers 204 with no body. This changes store pricing.',
+			'Add or update one or more category discount exceptions in a price table. The body is a JSON array of objects with the category ID and its discount percentage as a string. The API answers 204 with no body. This changes store pricing.',
 		method: 'PUT',
 		path: '/products/price-tables/{priceTableId}/categories',
 		pathParameters: [priceTableId],
